@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Impactree
 
-## Getting Started
+## Overview
+Impactree is a charity app that turns your generosity into a thriving virtual forest. Track your donations to selected causes, see the real-world impact of your giving, and watch as your contributions grow from a tiny seed into a mighty redwood -- or a whole forest. Set giving goals based on your income, visualize your long-term impact, and challenge yourself to create an entire forest of change. Impactree makes philanthropy engaging and clear, helping you see how even small donations can make a big difference over time.
 
-First, run the development server:
+## Learning Goals
+1. Gain experience with TypeScript and the Next.js environment
+2. Learn to build responsive and attractive UIs with Tailwind CSS
+3. Understand the basics of server-side rendering with Next.js
+4. Practice creating and consuming RESTful APIs with Django REST Framework running behind the scenes
+5. Implement user authentication and authorization
+6. Develop skills in state management and data flow in a React application
+7. Implement a gamification system
+8. Learn to connect a Next.js frontend with a Django backend
+9. Gain experience in full-stack development and CRUD operations
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
+- User authentication and profiles
+- Charity discovery and categorization
+- Donation tracking
+- Impact visualization
+- Tree growth gamification
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
+### Frontend
+- Next.js
+- TypeScript
+- Tailwind CSS
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Backend
+- Django
+- Django REST Framework
+- SQLite
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Installation
 
-## Learn More
+### Prerequisites
+- Node.js (v14 or later)
+- npm (v6 or later)
 
-To learn more about Next.js, take a look at the following resources:
+### Steps
+1. Clone the repository
+    ```sh
+   git clone https://github.com/your-username/impactree.git
+   cd impactree/client
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Install dependencies
+    ```sh
+   npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Start the development server
+    ```sh
+   npm run dev
 
-## Deploy on Vercel
+4. Open http://localhost:3000 in your browser to see the application.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Note**: This setup assumes the backend API is running at http://localhost:8000/api. Make sure your backend server is running before interacting with the app.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Contributing
+We welcome contributions to Impactree! Please read our [Contributing Guide](Contributing.md) for details on our code of conduct and the process for submitting pull requests.
