@@ -2,6 +2,8 @@
 Table User {
   id integer [primary key]
   username varchar
+  first_name varchar
+  last_name varchar
   email varchar
   password varchar
   // Other fields omitted for brevity
@@ -36,20 +38,6 @@ Table Charity {
   description text
   impact_per_dollar decimal
   avg_people_impacted_per_year integer
-  created_by integer [ref: > User.id]
-  created_at timestamp
-  updated_at timestamp
-}
-
-// ImpactPlan table
-Table ImpactPlan {
-  id integer [primary key]
-  user_id integer [ref: > User.id]
-  charity_id integer [ref: > Charity.id]
-  target_amount decimal
-  target_date date
-  created_at timestamp
-  updated_at timestamp
 }
 
 // Donation table
@@ -57,16 +45,25 @@ Table Donation {
   id integer [primary key]
   user_id integer [ref: > User.id]
   charity_id integer [ref: > Charity.id]
-  impact_plan_id integer [ref: > ImpactPlan.id]
   amount decimal
   donation_date date
 }
 
-// Tree table
-Table Tree {
+// TreeMilestone table
+Table TreeMilestone {
+  id integer [primary key]
+  name varchar
+  description text
+  required_impact_points integer
+  image_url varchar
+}
+
+// UserTreeProgress table
+Table UserTreeProgress {
   id integer [primary key]
   user_id integer [ref: - User.id]
-  current_stage varchar
+  current_milestone_id integer [ref: > TreeMilestone.id]
+  impact_points integer
   progress_to_next_stage decimal
 }
 
@@ -74,10 +71,7 @@ Table Tree {
 Ref: Token.user_id - User.id
 Ref: Profile.user_id - User.id
 Ref: Charity.category_id > CharityCategory.id
-Ref: Charity.created_by > User.id
-Ref: ImpactPlan.user_id > User.id
-Ref: ImpactPlan.charity_id > Charity.id
 Ref: Donation.user_id > User.id
 Ref: Donation.charity_id > Charity.id
-Ref: Donation.impact_plan_id > ImpactPlan.id
-Ref: Tree.user_id - User.id
+Ref: UserTreeProgress.user_id - User.id
+Ref: UserTreeProgress.current_milestone_id > TreeMilestone.id
