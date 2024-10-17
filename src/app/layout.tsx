@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Chari-Tree",
-  description: "Grow Your Giving",
+  title: "Impactree",
+  description: "Sow Seeds of Hope",
 };
 
 export default function RootLayout({
