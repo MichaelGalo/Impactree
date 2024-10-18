@@ -52,9 +52,9 @@
 
 import { AuthResponse, LoginCredentials, RegisterData } from "@/types/auth.types";
 import { fetchWithResponse } from "./fetcher";
-import { useAuth } from "@/context/AuthContext";
 
-export const login = async (credentials: LoginCredentials): Promise<boolean> => {
+
+export const login = async (credentials: LoginCredentials): Promise<AuthResponse | null> => {
   const response = await fetchWithResponse<AuthResponse>('login', {
     method: 'POST',
     headers: {
@@ -65,16 +65,13 @@ export const login = async (credentials: LoginCredentials): Promise<boolean> => 
   
   if (response.data.valid && response.data.token) {
     localStorage.setItem('token', response.data.token);
-    const { setIsAuthenticated, setUserProfile } = useAuth();
-    setIsAuthenticated(true);
-    setUserProfile(response.data.user);
-    return true;
+    return response.data;
   }
   
-  return false;
+  return null;
 };
 
-export const register = async (userData: RegisterData): Promise<boolean> => {
+export const register = async (userData: RegisterData): Promise<AuthResponse | null> => {
   const response = await fetchWithResponse<AuthResponse>('register', {
     method: 'POST',
     headers: {
@@ -85,11 +82,8 @@ export const register = async (userData: RegisterData): Promise<boolean> => {
   
   if (response.data.valid && response.data.token) {
     localStorage.setItem('token', response.data.token);
-    const { setIsAuthenticated, setUserProfile } = useAuth();
-    setIsAuthenticated(true);
-    setUserProfile(response.data.user);
-    return true;
+    return response.data;
   }
   
-  return false;
+  return null;
 };

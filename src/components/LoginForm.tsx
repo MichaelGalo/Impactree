@@ -1,5 +1,6 @@
 "use client"
 
+import { useAuth } from '@/context/AuthContext'
 import { login } from '@/services/auth'
 import { LoginCredentials } from '@/types/auth.types'
 import { useRouter } from 'next/navigation'
@@ -9,6 +10,7 @@ const LoginForm = () => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false);
+    const { setIsAuthenticated, setUserProfile } = useAuth();
     const router = useRouter()
 
     const togglePasswordVisibility = () => {
@@ -24,9 +26,10 @@ const LoginForm = () => {
         }
 
         try {
-            await login(loginRequest)
-            // if login is successful, then route
-            if (localStorage.getItem("token")) {
+            const authData = await login(loginRequest);
+            if (authData) {
+                setIsAuthenticated(true);
+                setUserProfile(authData.user);
                 router.push('/')
             } else {
                 window.alert("Please use valid username & password")
