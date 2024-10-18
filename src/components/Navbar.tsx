@@ -1,10 +1,36 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ThemeToggle } from './ThemeToggle';
+import { useRouter } from 'next/navigation';
 
 export const Navbar: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    router.push('/login');
+  };
+
+  const NavLink: React.FC<{ href: string; children: React.ReactNode }> = ({ href, children }) => {
+    if (!isAuthenticated && href !== '/' && href !== '/login') {
+      href = '/login';
+    }
+    return (
+      <Link href={href} className="py-4 px-2 text-gray-600 dark:text-gray-100 hover:text-green-500 transition duration-300">
+        {children}
+      </Link>
+    );
+  };
+
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-lg">
       <div className="max-w-6xl mx-auto px-4">
@@ -16,15 +42,20 @@ export const Navbar: React.FC = () => {
               </Link>
             </div>
             <div className="hidden md:flex items-center space-x-1">
-              <Link href="/" className="py-4 px-2 text-gray-500 dark:text-gray-100 hover:text-green-500 transition duration-300">Home</Link>
-              <Link href="/explore" className="py-4 px-2 text-gray-500 dark:text-gray-100 hover:text-green-500 transition duration-300">Explore</Link>
-              <Link href="/impact" className="py-4 px-2 text-gray-500 dark:text-gray-100 hover:text-green-500 transition duration-300">Impact</Link>
+              <NavLink href="/">Home</NavLink>
+              <NavLink href="/explore">Explore</NavLink>
+              <NavLink href="/impact">Impact</NavLink>
             </div>
           </div>
           <div className="flex items-center space-x-3">
             <ThemeToggle />
-            <Link href="/login" className="py-4 px-2 text-gray-500 dark:text-gray-100 hover:text-green-500 transition duration-300">Login</Link>
-            <Link href="/logout" className="py-4 px-2 text-gray-500 dark:text-gray-100 hover:text-green-500 transition duration-300">Logout</Link>
+            {isAuthenticated ? (
+              <button onClick={handleLogout} className="py-4 px-2 text-gray-500 dark:text-gray-100 hover:text-green-500 transition duration-300">
+                Logout
+              </button>
+            ) : (
+              <NavLink href="/login">Login</NavLink>
+            )}
           </div>
         </div>
       </div>
