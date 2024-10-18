@@ -1,19 +1,6 @@
+import { ApiError, ApiResponse } from "@/types/auth.types";
+
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
-export interface ApiResponse<T = any> {
-  data: T;
-  status: number;
-}
-
-export class ApiError extends Error {
-  status: number;
-  
-  constructor(status: number, message?: string) {
-    super(message || `HTTP error! status: ${status}`);
-    this.status = status;
-    this.name = 'ApiError';
-  }
-}
 
 const checkError = (response: Response): Response => {
   if (!response.ok) {

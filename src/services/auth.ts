@@ -1,46 +1,40 @@
+import { LoginCredentials, RegisterData, TokenResponse } from "@/types/auth.types";
 import { fetchWithResponse } from "./fetcher";
+import { UserProfile } from "@/types/user.types";
 
-// Input interfaces
-interface LoginCredentials {
-  username: string;
-  password: string;
-}
-
-interface RegisterData {
-  username: string;
-  email: string;
-  password: string;
-  first_name: string;
-  last_name: string;
-}
-
-// Output interfaces
-interface UserProfile {
-  id: number;
-  username: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  is_staff: boolean;
-}
-
-export const login = (credentials: LoginCredentials) => 
-  fetchWithResponse<UserProfile>('login', {
+export const login = async (credentials: LoginCredentials): Promise<boolean> => {
+  const response = await fetchWithResponse<TokenResponse>('login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(credentials),
   });
+  
+  if (response.data.valid && response.data.token) {
+    localStorage.setItem('token', response.data.token);
+    return true;
+  }
+  
+  return false;
+};
 
-export const register = (userData: RegisterData) => 
-  fetchWithResponse<UserProfile>('register', {
+export const register = async (userData: RegisterData): Promise<string | null> => {
+  const response = await fetchWithResponse<TokenResponse>('register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(userData),
   });
+  
+  if (response.data.token) {
+    localStorage.setItem('token', response.data.token);
+    return response.data.token;
+  }
+  
+  return null;
+};
 
 export const getUserProfile = (userId: number) => 
   fetchWithResponse<UserProfile>(`users/${userId}`, {
