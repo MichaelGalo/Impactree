@@ -1,22 +1,18 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ThemeToggle } from './ThemeToggle';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export const Navbar: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, setIsAuthenticated, userProfile, setUserProfile } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token);
-  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
+    setUserProfile(null)
     router.push('/login');
   };
 
@@ -50,9 +46,14 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center space-x-3">
             <ThemeToggle />
             {isAuthenticated ? (
-              <button onClick={handleLogout} className="py-4 px-2 text-gray-500 dark:text-gray-100 hover:text-green-500 transition duration-300">
-                Logout
-              </button>
+              <>
+                <span className="text-gray-500 dark:text-gray-100">
+                  {userProfile?.username}
+                </span>
+                <button onClick={handleLogout} className="py-4 px-2 text-gray-500 dark:text-gray-100 hover:text-green-500 transition duration-300">
+                  Logout
+                </button>
+              </>
             ) : (
               <NavLink href="/login">Login</NavLink>
             )}

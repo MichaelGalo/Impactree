@@ -1,11 +1,13 @@
 "use client"
 
+import { useAuth } from "@/context/AuthContext"
 import { register } from "@/services/auth"
 import { RegisterData } from "@/types/auth.types"
 import { useRouter } from 'next/navigation'
 import { useState } from "react"
 
 const RegistrationForm = () => {
+    const { setIsAuthenticated, setUserProfile } = useAuth();
     const [username, setUsername] = useState("")
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
@@ -30,8 +32,16 @@ const RegistrationForm = () => {
         }
 
         try {
-            await register(registrationRequest)
-            router.push('/')
+            const authData = await register(registrationRequest)
+
+            if (authData) {
+                setIsAuthenticated(true);
+                setUserProfile(authData.user);
+                router.push('/')
+            } else {
+                window.alert("Sorry, something went wrong")
+            }
+
         } catch (error) {
             console.error('Registration failed:', error)
         }
