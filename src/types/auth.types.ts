@@ -1,3 +1,5 @@
+import { UserProfile } from "./user.types";
+
 // Input interfaces
 export interface LoginCredentials {
     username: string;
@@ -20,6 +22,12 @@ export interface TokenResponse {
 export interface ApiResponse<T = any> {
   data: T;
   status: number;
+}
+
+export interface AuthResponse {
+  valid: boolean;
+  token: string;
+  user: UserProfile;
 }
 
 export class ApiError extends Error {

@@ -1,9 +1,61 @@
-import { LoginCredentials, RegisterData, TokenResponse } from "@/types/auth.types";
+// import { LoginCredentials, RegisterData, TokenResponse } from "@/types/auth.types";
+// import { fetchWithResponse } from "./fetcher";
+// import { UserProfile } from "@/types/user.types";
+
+// export const login = async (credentials: LoginCredentials): Promise<boolean> => {
+//   const response = await fetchWithResponse<TokenResponse>('login', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(credentials),
+//   });
+  
+//   if (response.data.valid && response.data.token) {
+//     localStorage.setItem('token', response.data.token);
+//     return true;
+//   }
+  
+//   return false;
+// };
+
+// export const register = async (userData: RegisterData): Promise<string | null> => {
+//   const response = await fetchWithResponse<TokenResponse>('register', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(userData),
+//   });
+  
+//   if (response.data.token) {
+//     localStorage.setItem('token', response.data.token);
+//     return response.data.token;
+//   }
+  
+//   return null;
+// };
+
+// export const getUserProfile = (userId: number) => 
+//   fetchWithResponse<UserProfile>(`users/${userId}`, {
+//     headers: {
+//       Authorization: `Token ${localStorage.getItem('token')}`,
+//     },
+//   });
+
+// export const getUsers = () => 
+//   fetchWithResponse<UserProfile[]>("users", {
+//     headers: {
+//       Authorization: `Token ${localStorage.getItem('token')}`
+//     }
+//   });
+
+import { AuthResponse, LoginCredentials, RegisterData } from "@/types/auth.types";
 import { fetchWithResponse } from "./fetcher";
-import { UserProfile } from "@/types/user.types";
+import { useAuth } from "@/context/AuthContext";
 
 export const login = async (credentials: LoginCredentials): Promise<boolean> => {
-  const response = await fetchWithResponse<TokenResponse>('login', {
+  const response = await fetchWithResponse<AuthResponse>('login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -13,14 +65,17 @@ export const login = async (credentials: LoginCredentials): Promise<boolean> => 
   
   if (response.data.valid && response.data.token) {
     localStorage.setItem('token', response.data.token);
+    const { setIsAuthenticated, setUserProfile } = useAuth();
+    setIsAuthenticated(true);
+    setUserProfile(response.data.user);
     return true;
   }
   
   return false;
 };
 
-export const register = async (userData: RegisterData): Promise<string | null> => {
-  const response = await fetchWithResponse<TokenResponse>('register', {
+export const register = async (userData: RegisterData): Promise<boolean> => {
+  const response = await fetchWithResponse<AuthResponse>('register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -28,24 +83,13 @@ export const register = async (userData: RegisterData): Promise<string | null> =
     body: JSON.stringify(userData),
   });
   
-  if (response.data.token) {
+  if (response.data.valid && response.data.token) {
     localStorage.setItem('token', response.data.token);
-    return response.data.token;
+    const { setIsAuthenticated, setUserProfile } = useAuth();
+    setIsAuthenticated(true);
+    setUserProfile(response.data.user);
+    return true;
   }
   
-  return null;
+  return false;
 };
-
-export const getUserProfile = (userId: number) => 
-  fetchWithResponse<UserProfile>(`users/${userId}`, {
-    headers: {
-      Authorization: `Token ${localStorage.getItem('token')}`,
-    },
-  });
-
-export const getUsers = () => 
-  fetchWithResponse<UserProfile[]>("users", {
-    headers: {
-      Authorization: `Token ${localStorage.getItem('token')}`
-    }
-  });
