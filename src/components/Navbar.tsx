@@ -6,12 +6,13 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
 export const Navbar: React.FC = () => {
-  const { isAuthenticated, setIsAuthenticated, userProfile } = useAuth();
+  const { isAuthenticated, setIsAuthenticated, userProfile, setUserProfile } = useAuth();
   const router = useRouter();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
+    setUserProfile(null)
     router.push('/login');
   };
 

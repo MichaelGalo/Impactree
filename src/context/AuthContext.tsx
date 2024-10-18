@@ -21,8 +21,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
-  console.log('AuthProvider state:', { isAuthenticated, userProfile });
-
   return (
     <AuthContext.Provider value={{ 
       isAuthenticated, 
