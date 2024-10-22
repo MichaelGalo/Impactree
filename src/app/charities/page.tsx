@@ -6,6 +6,7 @@ import { getCharityCategories } from "@/services/charityCategory"
 import { Charity } from "@/types/charity.types"
 import { CharityCategory } from "@/types/charityCategory"
 import { useEffect, useState } from "react"
+import { useRouter } from 'next/navigation'
 
 const Explore = () => {
     const { userProfile } = useAuth()
@@ -13,6 +14,7 @@ const Explore = () => {
     const [categories, setCategories] = useState<CharityCategory[]>([])
     const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0)
     const [isLoading, setIsLoading] = useState(true)
+    const router = useRouter()
 
     useEffect(() => {
         if (isLoading) {
@@ -96,6 +98,7 @@ const Explore = () => {
                                 </p>
                                 <button 
                                     className="w-full px-4 py-2 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+                                    onClick={()=>{router.push(`/charities/${charity.id}`)}}
                                 >
                                     Learn More
                                 </button>
