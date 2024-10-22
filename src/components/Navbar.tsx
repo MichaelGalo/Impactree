@@ -49,7 +49,7 @@ export const Navbar: React.FC = () => {
             </div>
             <div className="hidden md:flex items-center space-x-1">
               <NavLink href="/">Home</NavLink>
-              <NavLink href="/explore">Explore</NavLink>
+              <NavLink href="/charities">Explore</NavLink>
               <NavLink href="/impact">Impact</NavLink>
             </div>
           </div>
