@@ -18,14 +18,14 @@ const Explore = () => {
         if (isLoading) {
             // Add SSR Loading Cards Component here during stretch goals
         }
-
+    
         getCharities().then(response => {
           if (response.data) {  
             setCharities(response.data) 
             setIsLoading(false)
           }
         })
-
+    
         getCharityCategories().then(response => {
             if (response.data) {
                 setCategories(response.data)
