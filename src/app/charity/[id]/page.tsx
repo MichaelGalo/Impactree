@@ -1,0 +1,1 @@
+// page for the actual details of a charity to be slotted into the cards. 
