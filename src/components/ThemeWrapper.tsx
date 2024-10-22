@@ -9,7 +9,7 @@ export const ThemeWrapper: React.FC<{ children: React.ReactNode }> = ({ children
     <ThemeProvider>
       <div className="antialiased bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-screen">
         <div className="p-4">
-          <Navbar />
+          <Navbar  />
         </div>
         {children}
       </div>

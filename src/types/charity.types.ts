@@ -8,5 +8,5 @@ export interface Charity {
     description: string,
     impact_metric: string,
     impact_ratio: number,
-    website: string
+    website_url: string
     }
