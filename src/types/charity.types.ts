@@ -1,9 +1,10 @@
+import { CharityCategory } from "./charityCategory";
 
 
 export interface Charity {
     id: number;
     name: string,
-    category_id: number,
+    category: CharityCategory,
     description: string,
     impact_metric: string,
     impact_ratio: number,
