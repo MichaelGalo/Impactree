@@ -28,7 +28,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-lg">
+    <nav className="bg-white dark:bg-gray-800 shadow-lg max-w-5xl mx-auto">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between">
           <div className="flex space-x-7">
