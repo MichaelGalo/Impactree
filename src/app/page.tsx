@@ -25,9 +25,9 @@ const Home = () => {
               </p>
               <hr className="border-black dark:border-white my-4" />
               <div className="flex justify-center mt-8">
-                <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
-                  Explore Charities & Causes
-                </button>
+              <button className="px-6 py-3 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-300">
+              Explore Charities & Causes
+            </button>
               </div>
             </div>
             {/* Right column: Logo */}
