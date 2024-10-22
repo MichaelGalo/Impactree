@@ -1,7 +1,6 @@
 import { AuthResponse, LoginCredentials, RegisterData } from "@/types/auth.types";
 import { fetchWithResponse } from "./fetcher";
 
-
 export const login = async (credentials: LoginCredentials): Promise<AuthResponse | null> => {
   const response = await fetchWithResponse<AuthResponse>('login', {
     method: 'POST',
