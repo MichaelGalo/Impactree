@@ -19,7 +19,6 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const ImpactDashboard = () => {
   const { userProfile } = useAuth();
   const [impactPlan, setImpactPlan] = useState<ImpactPlan | null>(null);
-  const [allImpactPlans, setAllImpactPlans] = useState<ImpactPlan[]>([])
   const userId = userProfile?.id
   const router = useRouter()
 
