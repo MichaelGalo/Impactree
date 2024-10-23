@@ -11,17 +11,30 @@ import {
 } from 'chart.js';
 import { useAuth } from "@/context/AuthContext";
 import { ImpactPlan } from '@/types/impactPlan.types';
+import { getImpactPlanByUserId } from '@/services/impactPlan';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ImpactDashboard = () => {
   const { userProfile } = useAuth();
   const [impactPlan, setImpactPlan] = useState<ImpactPlan | null>(null);
-  const [charities, setCharities] = useState<ImpactPlanCharity | null>(null)
+  const userId = userProfile?.id
 
-  // add a useEffect to grab: 
-  // impactPlan of the userProfile
-  // impactPlan_Charity of the userProfiles
+  
+  
+  useEffect(() => {
+    const fetchImpactPlan = async () => {
+      if (!userId) return;
+      
+    const response = await getImpactPlanByUserId(userId);
+    setImpactPlan(response.data); 
+
+    };
+  
+    fetchImpactPlan();
+  }, [userId]);
+
+  console.log(impactPlan)
 
   const donationData = {
     labels: ['Committed', 'Remaining'],
@@ -31,8 +44,8 @@ const ImpactDashboard = () => {
         100 - Number(impactPlan?.philanthropy_percentage || 0)
       ],
       backgroundColor: [
-        '#10B981', // Green for donations
-        '#E5E7EB'  // Light gray for remaining
+        '#10B981', // for donations
+        '#E5E7EB'  // for remaining
       ],
       borderWidth: 0,
     }]
