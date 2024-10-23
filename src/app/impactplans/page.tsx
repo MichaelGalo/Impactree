@@ -27,7 +27,6 @@ const ImpactDashboard = () => {
     const fetchImpactPlan = async () => {
       try {
         const response = await getAllImpactPlans();
-        setAllImpactPlans(response.data); // Now TypeScript knows response.data is ImpactPlan[]
         
         // Find the impact plan for the current user
         const userImpactPlan = response.data.find(
@@ -44,7 +43,7 @@ const ImpactDashboard = () => {
     fetchImpactPlan();
   }, [userId]); 
 
-  // Metric Logic Functions
+// Metric Logic Functions
 const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -58,9 +57,16 @@ const getTotalAllocated = (impactPlan: ImpactPlan): number => {
     }, 0);
 };
 
+const getCurrentlyAllocated = (impactPlan: ImpactPlan): number => {
+  return impactPlan.charities.reduce((sum, charity) => {
+      return sum + Number(charity.allocation_amount);
+  }, 0);
+};
+
 const monthlyAllocation = (impactPlan: ImpactPlan): string => {
-    const monthlyAmount = getTotalAllocated(impactPlan) / 12;
-    return formatCurrency(monthlyAmount);
+  const currentlyAllocated = getCurrentlyAllocated(impactPlan);
+  const monthlyAmount = currentlyAllocated / 12;
+  return formatCurrency(monthlyAmount);
 };
 
 const unallocatedFunds = (impactPlan: ImpactPlan): string => {
@@ -91,7 +97,7 @@ const unallocatedFunds = (impactPlan: ImpactPlan): string => {
         </button>
       </div>
 
-        {/* Metrics Panel */}
+      {/* Metrics Panel */}
       <div className="grid lg:grid-cols-2 gap-6">
         <section className="border rounded-lg overflow-hidden border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6">
           <h2 className="text-xl font-semibold mb-6 dark:text-gray-200">Your Metrics</h2>
@@ -158,14 +164,26 @@ const unallocatedFunds = (impactPlan: ImpactPlan): string => {
                 <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-3">
                   Charities You Support
                 </h3>
-                <p>Insert mapped unordered list with list items as charity names</p>
+                <ul className='text-sm font-medium text-gray-600 dark:text-gray-300 mb-3'>
+                  {impactPlan?.charities.map(charityObject => (
+                    <li key={charityObject.id} className="text-black dark:text-gray-100">
+                      {charityObject.charity.name}
+                    </li>
+                  ))}
+                </ul>
               </div>
 
               <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-3">
                   Annual Projected Impact
                 </h3>
-                <p>Insert mapped unordered list with list items as charity impact metrics & ratios</p>
+                <ul className='text-sm font-medium text-gray-600 dark:text-gray-300 mb-3'>
+                  {impactPlan?.charities.map(charityObject => (
+                    <li key={charityObject.id} className="text-black dark:text-gray-100">
+                      {charityObject.charity.impact_metric}: {Number(charityObject.allocation_amount) * charityObject.charity.impact_ratio}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
 
