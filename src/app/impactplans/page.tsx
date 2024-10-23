@@ -5,8 +5,7 @@ import {
   Chart as ChartJS,
   ArcElement,
   Tooltip,
-  Legend,
-  ChartOptions
+  Legend
 } from 'chart.js';
 import { useAuth } from "@/context/AuthContext";
 import { ImpactPlan } from '@/types/impactPlan.types';
