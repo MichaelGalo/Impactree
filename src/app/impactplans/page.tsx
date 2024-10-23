@@ -10,38 +10,42 @@ import {
 } from 'chart.js';
 import { useAuth } from "@/context/AuthContext";
 import { ImpactPlan } from '@/types/impactPlan.types';
-import { getImpactPlanByUserId } from '@/services/impactPlan';
+
 import DoughnutChart from '@/components/DoughnutChart';
+import { useRouter } from 'next/navigation';
+import { getAllImpactPlans } from '@/services/impactPlan';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ImpactDashboard = () => {
   const { userProfile } = useAuth();
   const [impactPlan, setImpactPlan] = useState<ImpactPlan | null>(null);
+  const [allImpactPlans, setAllImpactPlans] = useState<ImpactPlan[]>([])
   const userId = userProfile?.id
+  const router = useRouter()
 
   useEffect(() => {
     const fetchImpactPlan = async () => {
-      if (!userId) return;
-      
       try {
-        const response = await getImpactPlanByUserId(userId);
-        setImpactPlan(response.data);
-      } catch (error) {
-        // Silently handle 404 as expected for new users
-        if (error instanceof Error && 'status' in error && error.status === 404) {
-          setImpactPlan(null);
-        } else {
-          console.error('Error fetching impact plan:', error);
+        const response = await getAllImpactPlans();
+        setAllImpactPlans(response.data); // Now TypeScript knows response.data is ImpactPlan[]
+        
+        // Find the impact plan for the current user
+        const userImpactPlan = response.data.find(
+          (plan: ImpactPlan) => plan.user.id === userProfile?.id
+        );
+        if (userImpactPlan) {
+          setImpactPlan(userImpactPlan);
         }
+      } catch (error) {
+        console.error('Error fetching impact plans:', error);
       }
     };
   
     fetchImpactPlan();
-  }, [userId]);
+  }, [userId]); 
 
-  console.log(impactPlan)
-
+  // Metric Logic Functions
 const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -77,7 +81,10 @@ const unallocatedFunds = (impactPlan: ImpactPlan): string => {
 
       {/* Settings Buttons */}
       <div className="flex justify-end gap-4 mb-8">
-        <button className="px-4 py-2 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+        <button 
+        className="px-4 py-2 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+        onClick={()=>{router.push(`/impactplans/${impactPlan?.id}`)}}
+        >
           Plan Settings
         </button>
         <button className="px-4 py-2 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">

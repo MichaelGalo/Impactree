@@ -50,7 +50,7 @@ export const Navbar: React.FC = () => {
             <div className="hidden md:flex items-center space-x-1">
               <NavLink href="/">Home</NavLink>
               <NavLink href="/charities">Explore</NavLink>
-              <NavLink href="/impact">Impact</NavLink>
+              <NavLink href="/impactplans">Impact</NavLink>
             </div>
           </div>
           <div className="flex items-center space-x-3">
