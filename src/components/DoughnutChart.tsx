@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import {
   Chart as ChartJS,
@@ -8,6 +10,7 @@ import {
   ChartOptions
 } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
+import { useTheme } from '@/context/ThemeContext';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -19,7 +22,6 @@ interface DoughnutChartProps {
   legendPosition?: 'top' | 'bottom' | 'left' | 'right';
   fontSize?: number;
   labelPadding?: number;
-  labelColor?: string;
 }
 
 const DoughnutChart = ({
@@ -30,8 +32,9 @@ const DoughnutChart = ({
   legendPosition = 'bottom',
   fontSize = 12,
   labelPadding = 20,
-  labelColor = 'gray'
 }: DoughnutChartProps) => {
+  const { theme } = useTheme();
+
   // Convert percentage to number and handle undefined/null values
   const numericPercentage = Number(percentage || 0);
   
@@ -52,16 +55,17 @@ const DoughnutChart = ({
         position: legendPosition,
         labels: {
           padding: labelPadding,
-          color: labelColor,
           font: { size: fontSize },
           generateLabels: () => [{
             text: `Committed: ${safePercentage.toFixed(1)}%`,
             fillStyle: primaryColor,
-            index: 0
+            index: 0,
+            fontColor: theme === 'dark' ? '#10B981' : '#047857'
           }, {
             text: `Remaining: ${(100 - safePercentage).toFixed(1)}%`,
             fillStyle: secondaryColor,
-            index: 1
+            index: 1,
+            fontColor: theme === 'dark' ? '#E5E7EB' : '#4B5563'
           }]
         }
       },
