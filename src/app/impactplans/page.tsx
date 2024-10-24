@@ -98,7 +98,6 @@ const ImpactDashboard = () => {
                         legendPosition="bottom"
                         fontSize={12}
                         labelPadding={20}
-                        labelColor="gray"
                     />
                     </div>
                 </div>

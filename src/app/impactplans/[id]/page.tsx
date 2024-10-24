@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { getAllImpactPlans } from "@/services/impactPlan";
+import { createImpactPlan, getAllImpactPlans } from "@/services/impactPlan";
 import { ImpactPlan } from "@/types/impactPlan.types";
 import { formatCurrency } from '@/utils/impactMetrics';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
@@ -102,10 +102,18 @@ const ImpactPlanSettings = () => {
 
   const createNewPlan = async () => {
     try {
-      if (!impactPlan) return;
+      if (!impactPlan || !userProfile?.id) return;
   
-      // TODO: Add API call to create plan
-      console.log('Creating new plan:', impactPlan);
+      const requestBody = {
+        user: Number(userProfile.id),
+        annual_income: Number(annualIncome),
+        philanthropy_percentage: Number(philanthropyPercentage),
+        total_annual_allocation: Number(((Number(annualIncome) * Number(philanthropyPercentage)) / 100).toFixed(2)),
+        charities: []
+      };
+  
+      const response = await createImpactPlan(requestBody);
+      setImpactPlan(response.data);
       setIsNewPlan(false);
     } catch (error) {
       console.error('Error creating impact plan:', error);
