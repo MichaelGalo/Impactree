@@ -30,26 +30,29 @@ export const Nav: React.FC = () => {
   };
 
   const menuItems = isAuthenticated 
-    ? [
-        { name: "Home", href: "/" },
-        { name: "Explore", href: "/charities" },
-        { name: "Impact", href: "/impactplans" },
-        { name: "Profile", href: "/profile" },
-        { name: "Log Out", href: "#", onClick: handleLogout }
-      ]
-    : [
-        { name: "About", href: "/" },
-        { name: "Login", href: "/login" },
-        { name: "Sign Up", href: "/register" }
-      ];
+  ? [
+      { name: "Home", href: "/" },
+      { name: "Explore", href: "/charities" },
+      { name: "Impact", href: "/impactplans" },
+      { name: "Profile", href: `/profile/${userProfile?.id}` },
+      { name: "Log Out", href: "#", onClick: handleLogout }
+    ]
+  : [
+      { name: "About", href: "/" },
+      { name: "Login", href: "/login" },
+      { name: "Sign Up", href: "/register" }
+    ];
 
-  const handleNavigation = (href: string) => {
-    if (!isAuthenticated && href !== '/' && href !== '/login' && href !== '/register') {
-      router.push('/login');
-    } else {
-      router.push(href);
-    }
-  };
+    const handleNavigation = (href: string) => {
+      if (!isAuthenticated && href !== '/' && href !== '/login' && href !== '/register') {
+        router.push('/login');
+      } else if (href.startsWith('/profile') && !userProfile?.id) {
+        // Handle case where profile ID is not available
+        router.push('/login');
+      } else {
+        router.push(href);
+      }
+    };
 
   return (
     <Navbar 
@@ -102,10 +105,10 @@ export const Nav: React.FC = () => {
           <>
             <NavbarItem>
               <Link 
-              href="/profile"
-              onClick={() => handleNavigation('/profile')}
-              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100">
-              {userProfile?.username}
+                href={`/profile/${userProfile?.id}`}
+                onClick={() => handleNavigation(`/profile/${userProfile?.id}`)}
+                className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100">
+                {userProfile?.username}
               </Link>
             </NavbarItem>
             <NavbarItem>

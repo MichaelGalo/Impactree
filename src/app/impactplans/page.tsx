@@ -13,6 +13,7 @@ import { ImpactPlan } from '@/types/impactPlan.types';
 import DoughnutChart from '@/components/DoughnutChart';
 import { useRouter } from 'next/navigation';
 import { getAllImpactPlans } from '@/services/impactPlan';
+import { monthlyAllocation, unallocatedFunds } from '@/utils/impactMetrics';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -42,36 +43,6 @@ const ImpactDashboard = () => {
     fetchImpactPlan();
   }, [userId]); 
 
-// Metric Logic Functions
-const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(amount);
-};
-
-const getTotalAllocated = (impactPlan: ImpactPlan): number => {
-    return impactPlan.charities.reduce((sum, charity) => {
-        return sum + Number(charity.allocation_amount);
-    }, 0);
-};
-
-const getCurrentlyAllocated = (impactPlan: ImpactPlan): number => {
-  return impactPlan.charities.reduce((sum, charity) => {
-      return sum + Number(charity.allocation_amount);
-  }, 0);
-};
-
-const monthlyAllocation = (impactPlan: ImpactPlan): string => {
-  const currentlyAllocated = getCurrentlyAllocated(impactPlan);
-  const monthlyAmount = currentlyAllocated / 12;
-  return formatCurrency(monthlyAmount);
-};
-
-const unallocatedFunds = (impactPlan: ImpactPlan): string => {
-    const unallocated = Number(impactPlan.total_annual_allocation) - getTotalAllocated(impactPlan);
-    return formatCurrency(unallocated);
-};
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
