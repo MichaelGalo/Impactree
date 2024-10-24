@@ -19,12 +19,8 @@ import { Button } from '@nextui-org/react';
 export const Nav: React.FC = () => {
   const { isAuthenticated, setIsAuthenticated, userProfile, setUserProfile } = useAuth();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -36,9 +32,9 @@ export const Nav: React.FC = () => {
   const menuItems = isAuthenticated 
     ? [
         { name: "Home", href: "/" },
-        { name: "Profile", href: "/profile" },
+        { name: "Explore", href: "/charities" },
         { name: "Impact", href: "/impactplans" },
-        { name: "Charities", href: "/charities" },
+        { name: "Profile", href: "/profile" },
         { name: "Log Out", href: "#", onClick: handleLogout }
       ]
     : [
