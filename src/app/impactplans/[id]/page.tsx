@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { getAllImpactPlans } from "@/services/impactPlan";
-import { ImpactPlan, ImpactPlanCharity } from "@/types/impactPlan.types";
+import { ImpactPlan } from "@/types/impactPlan.types";
 import { formatCurrency } from '@/utils/impactMetrics';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import LoadingOverlay from "@/components/loadingOverlay";
 
 const ImpactPlanSettings = () => {
   const { userProfile } = useAuth();
@@ -12,21 +14,35 @@ const ImpactPlanSettings = () => {
   const [annualIncome, setAnnualIncome] = useState<string>("");
   const [philanthropyPercentage, setPhilanthropyPercentage] = useState<string>("");
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  // TODO: create a charity modal state here (stretch)
+  const [isLoading, setIsLoading] = useState(true);
+  const [isNewPlan, setIsNewPlan] = useState(false);
 
   useEffect(() => {
     const fetchImpactPlan = async () => {
+      setIsLoading(true);
       try {
         const response = await getAllImpactPlans();
         const userImpactPlan = response.data.find(
           (plan: ImpactPlan) => plan.user.id === userProfile?.id
         );
+        
         if (userImpactPlan) {
           setImpactPlan(userImpactPlan);
           setAnnualIncome(userImpactPlan.annual_income);
           setPhilanthropyPercentage(userImpactPlan.philanthropy_percentage);
+          setIsNewPlan(false);
+        } else {
+          // Handle new plan creation if user doesn't have one
+          setIsNewPlan(true);
+          setImpactPlan(null);
+          setAnnualIncome("");
+          setPhilanthropyPercentage("");
         }
       } catch (error) {
         console.error('Error fetching impact plans:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -34,39 +50,71 @@ const ImpactPlanSettings = () => {
   }, [userProfile?.id]);
 
   const handleAnnualIncomeChange = (value: string) => {
+    setAnnualIncome(value);
+    
     if (!isNaN(Number(value))) {
-      setAnnualIncome(value);
-      
-      if (impactPlan) {
+      if (isNewPlan) {
+        // Create a basic new plan structure
+        const newPlan: Partial<ImpactPlan> = {
+          annual_income: value,
+          philanthropy_percentage: philanthropyPercentage || "0",
+          total_annual_allocation: ((Number(value) * Number(philanthropyPercentage || 0)) / 100).toString(),
+          charities: []
+        };
+        setImpactPlan(newPlan as ImpactPlan);
+      } else if (impactPlan) {
+        // Update existing plan
         const updatedPlan: ImpactPlan = {
           ...impactPlan,
           annual_income: value,
-          total_annual_allocation: (Number(value) * (Number(philanthropyPercentage) / 100)).toString()
+          total_annual_allocation: ((Number(value) * Number(philanthropyPercentage)) / 100).toString()
         };
         setImpactPlan(updatedPlan);
       }
     }
   };
-
+  
   const handlePercentageChange = (value: string) => {
+    setPhilanthropyPercentage(value);
+    
     const numberValue = Number(value);
     if (!isNaN(numberValue) && numberValue <= 100) {
-      setPhilanthropyPercentage(value);
-      
-      if (impactPlan) {
+      if (isNewPlan) {
+        // Create a basic new plan structure
+        const newPlan: Partial<ImpactPlan> = {
+          annual_income: annualIncome || "0",
+          philanthropy_percentage: value,
+          total_annual_allocation: ((Number(annualIncome || 0) * numberValue) / 100).toString(),
+          charities: []
+        };
+        setImpactPlan(newPlan as ImpactPlan);
+      } else if (impactPlan) {
+        // Update existing plan
         const updatedPlan: ImpactPlan = {
           ...impactPlan,
           philanthropy_percentage: value,
-          total_annual_allocation: (Number(annualIncome) * (numberValue / 100)).toString()
+          total_annual_allocation: ((Number(annualIncome) * numberValue) / 100).toString()
         };
         setImpactPlan(updatedPlan);
       }
     }
   };
 
-  const handleSavePlan = async () => {
+  const createNewPlan = async () => {
     try {
       if (!impactPlan) return;
+  
+      // TODO: Add API call to create plan
+      console.log('Creating new plan:', impactPlan);
+      setIsNewPlan(false);
+    } catch (error) {
+      console.error('Error creating impact plan:', error);
+    }
+  };
+
+  const updatePlan = async () => {
+    try {
+      if (!impactPlan?.id) return;
       
       const updatedPlan: ImpactPlan = {
         ...impactPlan,
@@ -75,25 +123,38 @@ const ImpactPlanSettings = () => {
         total_annual_allocation: (Number(annualIncome) * (Number(philanthropyPercentage) / 100)).toString()
       };
       
-      // TODO: Add  API call here to save the plan
-      console.log('Saving plan:', updatedPlan);
+      // TODO: Add API call to update plan
+      console.log('Updating plan:', updatedPlan);
     } catch (error) {
-      console.error('Error saving impact plan:', error);
+      console.error('Error updating impact plan:', error);
+    }
+  };
+
+  const handleSavePlan = async () => {
+    if (isNewPlan) {
+      await createNewPlan();
+    } else {
+      await updatePlan();
     }
   };
 
   const handleDeletePlan = async () => {
     try {
       if (impactPlan?.id) {
-        // TODO: Add  API call here to delete the plan
+        // TODO: Add API call to delete plan
         console.log('Deleting plan:', impactPlan.id);
         setDeleteModalOpen(false);
+        // After successful delete, reset to new plan state
+        setIsNewPlan(true);
+        setImpactPlan(null);
+        setAnnualIncome("");
+        setPhilanthropyPercentage("");
       }
     } catch (error) {
       console.error('Error deleting impact plan:', error);
     }
   };
-
+  
   // Class bundles 
   const inputClasses = `w-full border rounded p-2
     bg-white dark:bg-gray-700
@@ -119,127 +180,169 @@ const ImpactPlanSettings = () => {
     border border-gray-200 dark:border-gray-700 
     rounded-lg shadow-sm`
 
-  return (
-    <div className="container mx-auto p-6">
-      <div className="flex gap-6">
-        {/* Left Column - Settings */}
-        <div className="w-1/3 space-y-4">
-          <div className={cardClasses}>
-            <div className="p-4">
-              <div className="mb-4">
-              <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                  Total Annual Allocation
-                </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {impactPlan ? formatCurrency(Number(impactPlan.total_annual_allocation)) : '$0.00'}
-                </p>
-              </div>
+    return (
+        <div className="container mx-auto p-6">
+          <div className="flex gap-6">
+            {/* Left Column - Settings */}
+            <div className="w-1/3 space-y-4">
+              <div className={cardClasses}>
+                <div className="p-4">
 
-              
-                <label htmlFor="annual-income" className={labelClasses}>
-                  Annual Income
-                </label>
-                <input
-                  type="number"
-                  id="annual-income"
-                  value={annualIncome}
-                  onChange={(e) => handleAnnualIncomeChange(e.target.value)}
-                  className={inputClasses}
-                  min={0}
-                />
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="philanthropy-percentage" className={labelClasses}>
-                  Philanthropy Percentage
-                </label>
-                <input
-                  type="number"
-                  id="philanthropy-percentage"
-                  value={philanthropyPercentage}
-                  onChange={(e) => handlePercentageChange(e.target.value)}
-                  className={inputClasses}
-                  min={0}
-                  max={100}
-                  step={0.1}
-                />
-              </div>
-
-
-              <div className="flex flex-col gap-2">
-                <button onClick={handleSavePlan} className={primaryButtonClasses}>
-                  Save Plan
-                </button>
-                <button 
-                  onClick={() => setDeleteModalOpen(true)} 
-                  className={secondaryButtonClasses}
-                >
-                  Delete Plan
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column - Charities */}
-        <div className="w-2/3">
-          <div className={cardClasses}>
-            <div className="p-4">
-              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                Selected Charities & Causes
-              </h2>
-              <div className="space-y-4">
-                {impactPlan?.charities.map((charity) => (
-                  <div 
-                    key={charity.id} 
-                    className="flex items-center justify-between p-4 border rounded-lg border-gray-200 dark:border-gray-700"
-                  >
-                    <div className="flex-grow">
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        {charity.charity.name}
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Current allocation: {formatCurrency(Number(charity.allocation_amount))}
-                      </p>
-                    </div>
+                  {/* Total Annual Allocation */}
+                  <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                      Total Annual Allocation
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {impactPlan ? formatCurrency(Number(impactPlan.total_annual_allocation)) : '$0.00'}
+                    </p>
                   </div>
-                ))}
+      
+                  {/* Annual Income Input */}
+                  <div className="mb-4">
+                    <label htmlFor="annual-income" className={labelClasses}>
+                      Annual Income
+                    </label>
+                    <input
+                      type="number"
+                      id="annual-income"
+                      value={annualIncome}
+                      onChange={(e) => handleAnnualIncomeChange(e.target.value)}
+                      className={inputClasses}
+                      min={0}
+                      placeholder="Enter your annual income"
+                    />
+                  </div>
+      
+                  {/* Philanthropy Percentage Input */}
+                  <div className="mb-4">
+                    <label htmlFor="philanthropy-percentage" className={labelClasses}>
+                      Philanthropy Percentage
+                    </label>
+                    <input
+                      type="number"
+                      id="philanthropy-percentage"
+                      value={philanthropyPercentage}
+                      onChange={(e) => handlePercentageChange(e.target.value)}
+                      className={inputClasses}
+                      min={0}
+                      max={100}
+                      step={0.1}
+                      placeholder="Enter percentage (0-100)"
+                    />
+                  </div>
+      
+                  {/* Action Buttons */}
+                  <div className="flex flex-col gap-2">
+                    <button 
+                      onClick={handleSavePlan} 
+                      className={primaryButtonClasses}
+                      disabled={isLoading}
+                    >
+                      {isNewPlan ? 'Create Plan' : 'Save Plan'}
+                    </button>
+                    {!isNewPlan && (
+                      <button 
+                        onClick={() => setDeleteModalOpen(true)} 
+                        className={secondaryButtonClasses}
+                        disabled={isLoading}
+                      >
+                        Delete Plan
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+      
+            {/* Right Column - Charities */}
+            <div className="w-2/3">
+              <div className={cardClasses}>
+                <div className="p-4">
+                  <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                    Selected Charities & Causes
+                  </h2>
+                  <div className="space-y-4">
+                    {impactPlan?.charities.map((charity) => (
+                      <div 
+                        key={charity.id} 
+                        className="flex items-center justify-between p-4 border rounded-lg border-gray-200 dark:border-gray-700"
+                      >
+                        <div className="flex-grow">
+                          <p className="font-medium text-gray-900 dark:text-white">
+                            {charity.charity.name}
+                          </p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Current allocation: {formatCurrency(Number(charity.allocation_amount))}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                    {(!impactPlan?.charities || impactPlan.charities.length === 0) && (
+                      <div className="text-center py-8 text-gray-600 dark:text-gray-400">
+                        No charities have been added to your impact plan yet.
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+      
+          {/* Delete Modal */}
+          <Modal 
+            isOpen={deleteModalOpen} 
+            onClose={() => setDeleteModalOpen(false)}
+            backdrop="blur"
+            classNames={{
+              backdrop: "bg-black/50",
+              base: cardClasses,
+              header: "border-b border-gray-200 dark:border-gray-700",
+              footer: "border-t border-gray-200 dark:border-gray-700",
+              closeButton: "hover:bg-gray-100 dark:hover:bg-gray-700",
+              body: "text-gray-600 dark:text-gray-400",
+            }}
+          >
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="text-gray-900 dark:text-gray-100">
+                    Are you sure?
+                  </ModalHeader>
+                  <ModalBody>
+                    <p>
+                      This action cannot be undone. This will permanently delete your impact plan.
+                    </p>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button 
+                      className={secondaryButtonClasses}
+                      onPress={onClose}
+                      variant="light"
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                      onPress={() => {
+                        handleDeletePlan();
+                        onClose();
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+      
+          {/* Loading Overlay */}
+          {isLoading && (
+            <LoadingOverlay/>
+          )}
         </div>
-      </div>
-
-      {/* Delete Modal */}
-      {deleteModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className={`${cardClasses} p-6 max-w-md mx-auto`}>
-            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-              Are you sure?
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              This action cannot be undone. This will permanently delete your impact plan.
-            </p>
-            <div className="flex justify-end gap-4">
-              <button 
-                onClick={() => setDeleteModalOpen(false)}
-                className={secondaryButtonClasses}
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handleDeletePlan}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+      )
+    }
 
 export default ImpactPlanSettings
