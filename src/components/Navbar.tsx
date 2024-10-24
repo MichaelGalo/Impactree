@@ -105,9 +105,12 @@ export const Nav: React.FC = () => {
         {isAuthenticated ? (
           <>
             <NavbarItem>
-              <span className="text-gray-900 dark:text-gray-100">
-                {userProfile?.username}
-              </span>
+              <Link 
+              href="/profile"
+              onClick={() => handleNavigation('/profile')}
+              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100">
+              {userProfile?.username}
+              </Link>
             </NavbarItem>
             <NavbarItem>
               <Button 
