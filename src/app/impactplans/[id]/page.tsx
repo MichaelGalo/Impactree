@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { createImpactPlan, deleteImpactPlan, getAllImpactPlans, updateImpactPlan } from "@/services/impactPlan";
-import { ImpactPlan } from "@/types/impactPlan.types";
-import { formatCurrency } from '@/utils/impactMetrics';
+import { ImpactPlan, ImpactPlanCharity } from "@/types/impactPlan.types";
+import { formatCurrency, getTotalAllocated, unallocatedFunds } from '@/utils/impactMetrics';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import LoadingOverlay from "@/components/loadingOverlay";
+import { deleteImpactPlanCharity, updateImpactPlanCharity } from "@/services/impactPlanCharity";
 
 const ImpactPlanSettings = () => {
   const { userProfile } = useAuth();
@@ -14,9 +15,12 @@ const ImpactPlanSettings = () => {
   const [annualIncome, setAnnualIncome] = useState<string>("");
   const [philanthropyPercentage, setPhilanthropyPercentage] = useState<string>("");
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  // TODO: create a charity modal state here (stretch)
   const [isLoading, setIsLoading] = useState(true);
   const [isNewPlan, setIsNewPlan] = useState(false);
+  const [allocationModalOpen, setAllocationModalOpen] = useState(false);
+  const [selectedCharity, setSelectedCharity] = useState<ImpactPlanCharity | null>(null);
+  const [newAllocationAmount, setNewAllocationAmount] = useState<string>("");
+
 
   useEffect(() => {
     const fetchImpactPlan = async () => {
@@ -158,6 +162,54 @@ const ImpactPlanSettings = () => {
       await updatePlan();
     }
   };
+
+  const handleUpdateAllocation = async () => {
+    if (!selectedCharity || !newAllocationAmount) return;
+  
+    try {
+      await updateImpactPlanCharity(selectedCharity.id, Number(newAllocationAmount));
+      // Refresh the impact plan data after update
+      const response = await getAllImpactPlans();
+      const userImpactPlan = response.data.find(
+        (plan: ImpactPlan) => plan.user.id === userProfile?.id
+      );
+      if (userImpactPlan) {
+        setImpactPlan(userImpactPlan);
+      }
+      setAllocationModalOpen(false);
+      setNewAllocationAmount("");
+      setSelectedCharity(null);
+    } catch (error) {
+      console.error('Error updating allocation:', error);
+    }
+  };
+  
+  const handleDeleteCharity = async () => {
+    if (!selectedCharity) return;
+  
+    try {
+      await deleteImpactPlanCharity(selectedCharity.id);
+      // Refresh the impact plan data after delete
+      const response = await getAllImpactPlans();
+      const userImpactPlan = response.data.find(
+        (plan: ImpactPlan) => plan.user.id === userProfile?.id
+      );
+      if (userImpactPlan) {
+        setImpactPlan(userImpactPlan);
+      }
+      setAllocationModalOpen(false);
+      setNewAllocationAmount("");
+      setSelectedCharity(null);
+    } catch (error) {
+      console.error('Error deleting charity:', error);
+    }
+  };
+  
+  const openAllocationModal = (charity: ImpactPlanCharity) => {
+    setSelectedCharity(charity);
+    setNewAllocationAmount(String(charity.allocation_amount));
+    setAllocationModalOpen(true);
+  };
   
   // Class bundles 
   const inputClasses = `w-full border rounded p-2
@@ -280,6 +332,12 @@ const ImpactPlanSettings = () => {
                             Current allocation: {formatCurrency(Number(charity.allocation_amount))}
                           </p>
                         </div>
+                        <button
+                        onClick={() => openAllocationModal(charity)}
+                        className={primaryButtonClasses}
+                      >
+                        Edit Donation
+                      </button>
                       </div>
                     ))}
                     {(!impactPlan?.charities || impactPlan.charities.length === 0) && (
@@ -345,7 +403,100 @@ const ImpactPlanSettings = () => {
           {isLoading && (
             <LoadingOverlay/>
           )}
+
+          {/* Allocation Modal */}
+          <Modal 
+            isOpen={allocationModalOpen} 
+            onClose={() => {
+              setAllocationModalOpen(false);
+              setSelectedCharity(null);
+              setNewAllocationAmount("");
+            }}
+            backdrop="blur"
+            classNames={{
+              backdrop: "bg-black/50",
+              base: cardClasses,
+              header: "border-b border-gray-200 dark:border-gray-700",
+              footer: "border-t border-gray-200 dark:border-gray-700",
+              closeButton: "hover:bg-gray-100 dark:hover:bg-gray-700",
+              body: "text-gray-600 dark:text-gray-400",
+            }}
+          >
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="text-gray-900 dark:text-gray-100">
+                    Update Donation for {selectedCharity?.charity.name}
+                  </ModalHeader>
+                  <ModalBody>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                          Total Annual Allocation Available
+                        </p>
+                        <p className="text-xl font-bold text-gray-900 dark:text-white">
+                          {impactPlan ? unallocatedFunds(impactPlan) : '$0.00'}
+                        </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          of {impactPlan ? formatCurrency(Number(impactPlan.total_annual_allocation)) : '$0.00'} total
+                        </p>
+                      </div>
+                      <div>
+                        <label htmlFor="allocation-amount" className={labelClasses}>
+                          Allocation Amount
+                        </label>
+                        <input
+                          type="number"
+                          id="allocation-amount"
+                          value={newAllocationAmount}
+                          onChange={(e) => setNewAllocationAmount(e.target.value)}
+                          className={inputClasses}
+                          min={0}
+                          max={impactPlan ? (
+                            Number(impactPlan.total_annual_allocation) - 
+                            getTotalAllocated(impactPlan) + 
+                            (selectedCharity ? Number(selectedCharity.allocation_amount) : 0)
+                          ) : 0}
+                          step={0.01}
+                          placeholder="Enter allocation amount"
+                        />
+                        {selectedCharity && (
+                          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            Current allocation: {formatCurrency(Number(selectedCharity.allocation_amount))}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </ModalBody>
+                  <ModalFooter className="flex justify-between">
+                    <Button 
+                      className={secondaryButtonClasses}
+                      onPress={() => handleDeleteCharity()}
+                    >
+                      Remove Charity
+                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        className={secondaryButtonClasses}
+                        onPress={onClose}
+                        variant="light"
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        className={primaryButtonClasses}
+                        onPress={() => handleUpdateAllocation()}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
         </div>
+        
       )
     }
 

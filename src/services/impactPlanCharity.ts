@@ -1,8 +1,8 @@
 
-import { ImpactPlanCharity } from "@/types/impactPlan.types"
+import { ImpactPlanCharity, ImpactPlanCharityCreate } from "@/types/impactPlan.types"
 import { fetchWithResponse, fetchWithoutResponse } from "./fetcher"
 
-export const createImpactPlanCharity = async (data: ImpactPlanCharity) => {
+export const createImpactPlanCharity = async (data: ImpactPlanCharityCreate) => {
   return await fetchWithResponse(`impactplan_charities`, {
     method: "POST",
     headers: {
