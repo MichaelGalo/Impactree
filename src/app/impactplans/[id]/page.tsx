@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { createImpactPlan, getAllImpactPlans } from "@/services/impactPlan";
+import { createImpactPlan, getAllImpactPlans, updateImpactPlan } from "@/services/impactPlan";
 import { ImpactPlan } from "@/types/impactPlan.types";
 import { formatCurrency } from '@/utils/impactMetrics';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
@@ -29,15 +29,14 @@ const ImpactPlanSettings = () => {
         
         if (userImpactPlan) {
           setImpactPlan(userImpactPlan);
-          setAnnualIncome(userImpactPlan.annual_income);
-          setPhilanthropyPercentage(userImpactPlan.philanthropy_percentage);
+          setAnnualIncome(String(userImpactPlan.annual_income)); 
+          setPhilanthropyPercentage(String(userImpactPlan.philanthropy_percentage)); 
           setIsNewPlan(false);
         } else {
-          // Handle new plan creation if user doesn't have one
           setIsNewPlan(true);
           setImpactPlan(null);
-          setAnnualIncome("");
-          setPhilanthropyPercentage("");
+          setAnnualIncome("");  
+          setPhilanthropyPercentage("");  
         }
       } catch (error) {
         console.error('Error fetching impact plans:', error);
@@ -45,29 +44,28 @@ const ImpactPlanSettings = () => {
         setIsLoading(false);
       }
     };
-
+  
     fetchImpactPlan();
   }, [userProfile?.id]);
 
   const handleAnnualIncomeChange = (value: string) => {
-    setAnnualIncome(value);
+    setAnnualIncome(value);  
     
-    if (!isNaN(Number(value))) {
+    const numberValue = value === "" ? 0 : Number(value);
+    if (!isNaN(numberValue)) {
       if (isNewPlan) {
-        // Create a basic new plan structure
         const newPlan: Partial<ImpactPlan> = {
-          annual_income: value,
-          philanthropy_percentage: philanthropyPercentage || "0",
-          total_annual_allocation: ((Number(value) * Number(philanthropyPercentage || 0)) / 100).toString(),
+          annual_income: numberValue,
+          philanthropy_percentage: Number(philanthropyPercentage) || 0,
+          total_annual_allocation: (numberValue * (Number(philanthropyPercentage) || 0)) / 100,
           charities: []
         };
         setImpactPlan(newPlan as ImpactPlan);
       } else if (impactPlan) {
-        // Update existing plan
         const updatedPlan: ImpactPlan = {
           ...impactPlan,
-          annual_income: value,
-          total_annual_allocation: ((Number(value) * Number(philanthropyPercentage)) / 100).toString()
+          annual_income: numberValue,
+          total_annual_allocation: (numberValue * Number(philanthropyPercentage)) / 100
         };
         setImpactPlan(updatedPlan);
       }
@@ -75,25 +73,23 @@ const ImpactPlanSettings = () => {
   };
   
   const handlePercentageChange = (value: string) => {
-    setPhilanthropyPercentage(value);
+    setPhilanthropyPercentage(value);  
     
-    const numberValue = Number(value);
+    const numberValue = value === "" ? 0 : Number(value);
     if (!isNaN(numberValue) && numberValue <= 100) {
       if (isNewPlan) {
-        // Create a basic new plan structure
         const newPlan: Partial<ImpactPlan> = {
-          annual_income: annualIncome || "0",
-          philanthropy_percentage: value,
-          total_annual_allocation: ((Number(annualIncome || 0) * numberValue) / 100).toString(),
+          annual_income: Number(annualIncome) || 0,
+          philanthropy_percentage: numberValue,
+          total_annual_allocation: ((Number(annualIncome) || 0) * numberValue) / 100,
           charities: []
         };
         setImpactPlan(newPlan as ImpactPlan);
       } else if (impactPlan) {
-        // Update existing plan
         const updatedPlan: ImpactPlan = {
           ...impactPlan,
-          philanthropy_percentage: value,
-          total_annual_allocation: ((Number(annualIncome) * numberValue) / 100).toString()
+          philanthropy_percentage: numberValue,
+          total_annual_allocation: ((Number(annualIncome) * numberValue) / 100)
         };
         setImpactPlan(updatedPlan);
       }
@@ -122,27 +118,22 @@ const ImpactPlanSettings = () => {
 
   const updatePlan = async () => {
     try {
-      if (!impactPlan?.id) return;
+      if (!impactPlan?.id || !userProfile?.id) return;
       
-      const updatedPlan: ImpactPlan = {
-        ...impactPlan,
-        annual_income: annualIncome,
-        philanthropy_percentage: philanthropyPercentage,
-        total_annual_allocation: (Number(annualIncome) * (Number(philanthropyPercentage) / 100)).toString()
+      const requestBody = {
+        user: Number(userProfile.id),
+        annual_income: Number(annualIncome),
+        philanthropy_percentage: Number(philanthropyPercentage),
+        total_annual_allocation: Number(((Number(annualIncome) * Number(philanthropyPercentage)) / 100).toFixed(2)),
+        charities: impactPlan.charities
       };
+  
+      const response = await updateImpactPlan(impactPlan.id, requestBody);
+      setImpactPlan(response.data);
       
-      // TODO: Add API call to update plan
-      console.log('Updating plan:', updatedPlan);
+      console.log('Updating plan:', requestBody);
     } catch (error) {
       console.error('Error updating impact plan:', error);
-    }
-  };
-
-  const handleSavePlan = async () => {
-    if (isNewPlan) {
-      await createNewPlan();
-    } else {
-      await updatePlan();
     }
   };
 
@@ -160,6 +151,14 @@ const ImpactPlanSettings = () => {
       }
     } catch (error) {
       console.error('Error deleting impact plan:', error);
+    }
+  };
+
+  const handleSavePlan = async () => {
+    if (isNewPlan) {
+      await createNewPlan();
+    } else {
+      await updatePlan();
     }
   };
   
