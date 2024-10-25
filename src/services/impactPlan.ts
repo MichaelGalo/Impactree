@@ -1,5 +1,5 @@
 import { ImpactPlan } from "@/types/impactPlan.types"
-import { fetchWithResponse } from "./fetcher"
+import { fetchWithoutResponse, fetchWithResponse } from "./fetcher"
 
 export const getImpactPlanById = async (planId: number) => {
   return await fetchWithResponse<ImpactPlan>(`impactplans/${planId}`, {
@@ -38,5 +38,15 @@ export const updateImpactPlan = async (planId: number, plan: any) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(plan)
+  });
+}
+
+export const deleteImpactPlan = async (planId: number) => {
+  return await fetchWithoutResponse(`impactplans/${planId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Token ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json'
+    }
   });
 }
