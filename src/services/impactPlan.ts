@@ -31,12 +31,12 @@ export const createImpactPlan = async (plan: any) => {
 }
 
 export const updateImpactPlan = async (planId: number, plan: any) => {
-  return await fetchWithResponse<ImpactPlan>(`impactplans`, {
+  return await fetchWithResponse<ImpactPlan>(`impactplans/${planId}`, {
     method: "PUT",
     headers: {
-        Authorization: `Token ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json'
+      Authorization: `Token ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(plan)
-  })
+  });
 }

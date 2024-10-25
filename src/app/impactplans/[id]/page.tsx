@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { createImpactPlan, getAllImpactPlans } from "@/services/impactPlan";
+import { createImpactPlan, getAllImpactPlans, updateImpactPlan } from "@/services/impactPlan";
 import { ImpactPlan } from "@/types/impactPlan.types";
 import { formatCurrency } from '@/utils/impactMetrics';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
@@ -118,27 +118,22 @@ const ImpactPlanSettings = () => {
 
   const updatePlan = async () => {
     try {
-      if (!impactPlan?.id) return;
+      if (!impactPlan?.id || !userProfile?.id) return;
       
-      const updatedPlan: ImpactPlan = {
-        ...impactPlan,
-        annual_income: annualIncome,
-        philanthropy_percentage: philanthropyPercentage,
-        total_annual_allocation: (Number(annualIncome) * (Number(philanthropyPercentage) / 100))
+      const requestBody = {
+        user: Number(userProfile.id),
+        annual_income: Number(annualIncome),
+        philanthropy_percentage: Number(philanthropyPercentage),
+        total_annual_allocation: Number(((Number(annualIncome) * Number(philanthropyPercentage)) / 100).toFixed(2)),
+        charities: impactPlan.charities
       };
+  
+      const response = await updateImpactPlan(impactPlan.id, requestBody);
+      setImpactPlan(response.data);
       
-      // TODO: Add API call to update plan
-      console.log('Updating plan:', updatedPlan);
+      console.log('Updating plan:', requestBody);
     } catch (error) {
       console.error('Error updating impact plan:', error);
-    }
-  };
-
-  const handleSavePlan = async () => {
-    if (isNewPlan) {
-      await createNewPlan();
-    } else {
-      await updatePlan();
     }
   };
 
@@ -156,6 +151,14 @@ const ImpactPlanSettings = () => {
       }
     } catch (error) {
       console.error('Error deleting impact plan:', error);
+    }
+  };
+
+  const handleSavePlan = async () => {
+    if (isNewPlan) {
+      await createNewPlan();
+    } else {
+      await updatePlan();
     }
   };
   
