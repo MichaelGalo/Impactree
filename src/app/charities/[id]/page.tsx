@@ -7,25 +7,46 @@ import { Charity } from '@/types/charity.types';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getCharityById } from '@/services/charity';
+import { getAllImpactPlans } from '@/services/impactPlan';
+import { ImpactPlan, ImpactPlanCharity } from '@/types/impactPlan.types';
+import { createImpactPlanCharity } from '@/services/impactPlanCharity';
 
 const CharityDetails = () => {
   const { userProfile } = useAuth();
   const { id } = useParams<{ id: string }>();
   const [charity, setCharity] = useState<Charity | undefined>(undefined);
+  const [impactPlan, setImpactPlan] = useState<ImpactPlan | null>(null);
+  const [error, setError] = useState<string | null>(null);
  
   useEffect(() => {
-    const fetchCharity = async () => {
-      const charityId = parseInt(id);
-      const response = await getCharityById(charityId);
-      if (response?.data) {
-        setCharity(response.data);
-      } else {
-        console.error('No data in response');
+    const fetchData = async () => {
+      try {
+        const charityId = parseInt(id);
+        const charityResponse = await getCharityById(charityId);
+        if (charityResponse?.data) {
+          setCharity(charityResponse.data);
+        } else {
+          console.error('No data in response');
+        }
+
+        // Fetch user's specific impact plan
+        const plansResponse = await getAllImpactPlans();
+        if (plansResponse?.data) {
+          const userImpactPlan = plansResponse.data.find(
+            (plan: ImpactPlan) => plan.user.id === userProfile?.id
+          );
+          if (userImpactPlan) {
+            setImpactPlan(userImpactPlan);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Failed to load data. Please try again.');
       }
     };
 
-    fetchCharity();
-  }, [id]);
+    fetchData();
+  }, [id, userProfile?.id]);
 
   const handleDelete = () => {
     return null;
@@ -35,13 +56,46 @@ const CharityDetails = () => {
     return null;
   }
 
-  const handleAddToImpact = () => {
-    return null;
+  const handleAddToImpact = async () => {
+    if (!impactPlan) {
+      setError("Please create an Impact Plan first to add charities.");
+      return;
+    }
+
+    if (!charity) {
+      setError("No charity selected.");
+      return;
+    }
+
+    // Check if charity is already in the plan
+    const charityExists = impactPlan.charities.some(
+        (planCharity: ImpactPlanCharity) => planCharity.charity_id === charity.id
+    );
+
+    if (charityExists) {
+      setError("This charity is already in your impact plan.");
+      return;
+    }
+
+    try {
+      await createImpactPlanCharity({
+        impact_plan_id: impactPlan.id,
+        charity_id: charity.id,
+        allocation_amount: 0 // Default to 0, to be updated later
+      });
+    } catch (error: any) {
+      setError("Failed to add charity to impact plan");
+    }
   }
 
   return (
     <div className="details-container pt-0 pb-4">
         <div className="max-w-4xl mx-auto p-8 bg-gray-100 dark:bg-gray-900 rounded-3xl my-24">
+        {error && (
+          <div className="mb-6 p-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 rounded-lg">
+            {error}
+          </div>
+        )}
         <div className="space-y-6">
             {/* Header Section with Title and Action Buttons */}
             <div className="flex items-center justify-between">

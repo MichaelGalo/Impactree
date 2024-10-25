@@ -4,8 +4,8 @@ import { Milestone } from "./milestone.types";
 import { UserProfile } from "./user.types";
 
 export interface ImpactPlanCharity {
-    id: number;
-    charity: Charity;
+    impact_plan_id: number;
+    charity_id: number;
     allocation_amount: number;
 }
 
