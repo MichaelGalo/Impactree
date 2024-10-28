@@ -129,7 +129,6 @@ const ImpactPlanSettings = () => {
         annual_income: Number(annualIncome),
         philanthropy_percentage: Number(philanthropyPercentage),
         total_annual_allocation: Number(((Number(annualIncome) * Number(philanthropyPercentage)) / 100).toFixed(2)),
-        charities: impactPlan.charities
       };
   
       const response = await updateImpactPlan(impactPlan.id, requestBody);
