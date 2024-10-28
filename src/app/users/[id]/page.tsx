@@ -40,7 +40,17 @@ const Profile = () => {
             
             const response = await updateProfile(userProfile.id, updateRequest);
             if (response && response.data) {
+                // Update both the context state and localStorage
                 setUserProfile(response.data);
+                localStorage.setItem('userProfile', JSON.stringify(response.data));
+                
+                // Maintain the existing token
+                const token = localStorage.getItem('token');
+                if (token) {
+                    // Optionally dispatch a storage event to notify other tabs
+                    window.dispatchEvent(new Event('storage'));
+                }
+                
                 window.alert('Profile updated successfully!');
             }
         } catch (error) {
