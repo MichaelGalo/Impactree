@@ -149,11 +149,16 @@ const ImpactDashboard = () => {
                   Annual Projected Impact
                 </h3>
                 <ul className='text-sm font-medium text-gray-600 dark:text-gray-300 mb-3'>
-                  {impactPlan?.charities.map(charityObject => (
-                    <li key={charityObject.id} className="text-black dark:text-gray-100">
-                      {charityObject.charity.impact_metric}: {Number(charityObject.allocation_amount) * charityObject.charity.impact_ratio}
-                    </li>
-                  ))}
+                {impactPlan?.charities.map(charityObject => {
+                    const impact = Number(charityObject.allocation_amount) * charityObject.charity.impact_ratio;
+                    const formattedImpact = Number.isInteger(impact) ? impact.toString() : impact.toFixed(2);
+                    
+                    return (
+                      <li key={charityObject.id} className="text-black dark:text-gray-100">
+                        {charityObject.charity.impact_metric}: {formattedImpact}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </div>
