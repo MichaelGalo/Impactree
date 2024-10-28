@@ -1,6 +1,7 @@
 import { Charity } from "@/types/charity.types";
 import { fetchWithoutResponse, fetchWithResponse } from "./fetcher";
-import { CharityFormData } from "@/app/charities/create/page";
+import { CharityFormData } from "@/components/forms/charities/CharityCreate";
+
 
 export const getCharities = async () => {
   return await fetchWithResponse<Charity[]>("charities", {

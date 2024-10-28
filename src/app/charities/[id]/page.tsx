@@ -6,17 +6,19 @@ import { useAuth } from "@/context/AuthContext";
 import { Charity } from '@/types/charity.types';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getCharityById } from '@/services/charity';
+import { deleteCharity, getCharityById } from '@/services/charity';
 import { getAllImpactPlans } from '@/services/impactPlan';
 import { ImpactPlan, ImpactPlanCharity } from '@/types/impactPlan.types';
 import { createImpactPlanCharity } from '@/services/impactPlanCharity';
+import { useRouter } from 'next/navigation';
 
 const CharityDetails = () => {
   const { userProfile } = useAuth();
   const { id } = useParams<{ id: string }>();
   const [charity, setCharity] = useState<Charity | undefined>(undefined);
   const [impactPlan, setImpactPlan] = useState<ImpactPlan | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); 
+  const router = useRouter()
  
   useEffect(() => {
     const fetchData = async () => {
@@ -48,12 +50,23 @@ const CharityDetails = () => {
     fetchData();
   }, [id, userProfile?.id]);
 
-  const handleDelete = () => {
-    return null;
+  const handleDelete = async () => {
+    if (!charity?.id) return;
+
+    if (window.confirm('Are you sure you want to delete this charity?')) {
+      try {
+        await deleteCharity(charity.id);
+        router.push('/charities');  
+      } catch (error) {
+        console.error('Error deleting charity:', error);
+        setError('Failed to delete charity. Please try again.');
+      }
+    }
   }
 
   const handleEdit = () => {
-    return null;
+    if (!charity?.id) return;
+    router.push(`/charities/${charity.id}/edit`);
   }
 
   const handleAddToImpact = async () => {
