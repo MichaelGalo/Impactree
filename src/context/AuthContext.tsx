@@ -3,6 +3,8 @@
 import { UserProfile } from '@/types/user.types';
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
+// this module primarily exports a provider & a custom hook to see and set auth state
+
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -13,6 +15,7 @@ type AuthContextType = {
   isLoading: boolean;
 };
 
+// define what the auth looks like
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   userProfile: null,
@@ -29,16 +32,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Initialize auth state
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') { // Make sure we're in the browser
+      // Check localStorage for existing login data
       const token = localStorage.getItem('token');
       const storedProfile = localStorage.getItem('userProfile');
       
-      setIsAuthenticated(!!token);
+      setIsAuthenticated(!!token); // converting token to boolean
       setUserProfile(storedProfile ? JSON.parse(storedProfile) : null);
       setIsLoading(false);
     }
   }, []);
 
+  // this saves login information
   const setAuthData = (token: string, user: UserProfile) => {
     localStorage.setItem('token', token);
     localStorage.setItem('userProfile', JSON.stringify(user));
@@ -74,4 +79,5 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
+// create custom hook to use this auth system
 export const useAuth = () => useContext(AuthContext);

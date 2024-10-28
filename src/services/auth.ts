@@ -1,4 +1,4 @@
-import { AuthResponse, LoginCredentials, RegisterData } from "@/types/auth.types";
+import { ApiError, AuthResponse, LoginCredentials, RegisterData } from "@/types/auth.types";
 import { fetchWithResponse } from "./fetcher";
 
 export const login = async (credentials: LoginCredentials): Promise<AuthResponse | null> => {
@@ -18,7 +18,7 @@ export const login = async (credentials: LoginCredentials): Promise<AuthResponse
   return null;
 };
 
-export const register = async (userData: RegisterData): Promise<AuthResponse | null> => {
+export const register = async (userData: RegisterData): Promise<AuthResponse> => {
   const response = await fetchWithResponse<AuthResponse>('register', {
     method: 'POST',
     headers: {
@@ -27,10 +27,10 @@ export const register = async (userData: RegisterData): Promise<AuthResponse | n
     body: JSON.stringify(userData),
   });
   
-  if (response.data.valid && response.data.token) {
-    localStorage.setItem('token', response.data.token);
-    return response.data;
+  if (!response.data.valid || !response.data.token || !response.data.user) {
+    throw new ApiError(400, "Invalid registration response");
   }
   
-  return null;
+  localStorage.setItem('token', response.data.token);
+  return response.data;
 };

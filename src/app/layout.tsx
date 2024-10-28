@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeWrapper } from "../components/ThemeWrapper";
 import { AuthProvider } from "@/context/AuthContext";
+import { NextUIAppProvider } from "@/providers/nextui-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,9 +30,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AuthProvider>
-        <ThemeWrapper>
-          {children}
-          </ThemeWrapper>
+          <ThemeWrapper>
+            <NextUIAppProvider>
+                {children}
+            </NextUIAppProvider>
+            </ThemeWrapper>
           </AuthProvider>
       </body>
     </html>
