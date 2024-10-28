@@ -69,7 +69,7 @@ const CharityDetails = () => {
 
     // Check if charity is already in the plan
     const charityExists = impactPlan.charities.some(
-        (planCharity: ImpactPlanCharity) => planCharity.charity_id === charity.id
+        (planCharity: any) => planCharity.charity_id === charity.id
     );
 
     if (charityExists) {
@@ -83,6 +83,7 @@ const CharityDetails = () => {
         charity_id: charity.id,
         allocation_amount: 0 // Default to 0, to be updated later
       });
+      window.alert('Charity Added to Your Impact Plan!');
     } catch (error: any) {
       setError("Failed to add charity to impact plan");
     }

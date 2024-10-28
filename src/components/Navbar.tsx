@@ -34,7 +34,7 @@ export const Nav: React.FC = () => {
       { name: "Home", href: "/" },
       { name: "Explore", href: "/charities" },
       { name: "Impact", href: "/impactplans" },
-      { name: "Profile", href: `/profile/${userProfile?.id}` },
+      { name: "Profile", href: `/users/${userProfile?.id}` },
       { name: "Log Out", href: "#", onClick: handleLogout }
     ]
   : [
@@ -46,7 +46,7 @@ export const Nav: React.FC = () => {
     const handleNavigation = (href: string) => {
       if (!isAuthenticated && href !== '/' && href !== '/login' && href !== '/register') {
         router.push('/login');
-      } else if (href.startsWith('/profile') && !userProfile?.id) {
+      } else if (href.startsWith('/users') && !userProfile?.id) {
         // Handle case where profile ID is not available
         router.push('/login');
       } else {
@@ -105,8 +105,8 @@ export const Nav: React.FC = () => {
           <>
             <NavbarItem>
               <Link 
-                href={`/profile/${userProfile?.id}`}
-                onClick={() => handleNavigation(`/profile/${userProfile?.id}`)}
+                href={`/users/${userProfile?.id}`}
+                onClick={() => handleNavigation(`/users/${userProfile?.id}`)}
                 className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100">
                 {userProfile?.username}
               </Link>

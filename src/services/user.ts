@@ -12,9 +12,21 @@ export const getUserProfile = async (userId: number): Promise<UserProfile | null
   };
   
   
-  export const getUsers = () => 
-    fetchWithResponse<UserProfile[]>("users", {
-      headers: {
-        Authorization: `Token ${localStorage.getItem('token')}`
-      }
-    });
+export const getUsers = () => 
+  fetchWithResponse<UserProfile[]>("users", {
+    headers: {
+      Authorization: `Token ${localStorage.getItem('token')}`
+    }
+  });
+
+
+export const updateProfile = async (userId: any, request: any) => {
+  return await fetchWithResponse<UserProfile>(`users/${userId}`, {
+    method: "PUT",
+    headers: {
+      "Authorization": `Token ${localStorage.getItem('token')}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(request)
+  })
+}
