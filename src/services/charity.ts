@@ -1,5 +1,5 @@
 import { Charity } from "@/types/charity.types";
-import { fetchWithResponse } from "./fetcher";
+import { fetchWithoutResponse, fetchWithResponse } from "./fetcher";
 import { CharityFormData } from "@/app/charities/create/page";
 
 export const getCharities = async () => {
@@ -27,4 +27,24 @@ export const createCharity = async (formData: CharityFormData) => {
         },
         body: JSON.stringify(formData)
   })
+}
+
+export const updateCharity = async (charityId: number, formData: CharityFormData) => {
+  return await fetchWithoutResponse(`charities/${charityId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Token ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify(formData)
+  });
+}
+
+export const deleteCharity = async (charityId: number) => {
+  return await fetchWithoutResponse(`charities/${charityId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Token ${localStorage.getItem('token')}`
+    }
+  });
 }
