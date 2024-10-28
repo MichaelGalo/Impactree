@@ -1,7 +1,8 @@
 "use client"
 
-import AboutHow from "@/components/text/AboutHow";
-import AboutWhy from "@/components/text/AboutWhy";
+import AboutFooter from "@/components/about/AboutFooter";
+import AboutHow from "@/components/about/AboutHow";
+import AboutWhy from "@/components/about/AboutWhy";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
@@ -56,9 +57,7 @@ const Home = () => {
       <AboutHow/>
 
       {/* Footer Content */}
-      <footer className="py-4 flex justify-center mt-auto">
-        <p>© 2024 Impactree. All rights reserved.</p>
-      </footer>
+      <AboutFooter/>
     </div>
   );
 }
