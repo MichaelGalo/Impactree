@@ -169,7 +169,7 @@ const ImpactDashboard = () => {
                 </h3>
                 
                 {impactPlan?.current_milestone?.image_filename ? (
-                    <div className="w-16 h-16 mb-4 relative">
+                    <div className="w-40 h-40 mb-4 relative">
                     <img 
                         src={impactPlan.current_milestone.image_filename} 
                         alt={impactPlan.current_milestone.name}
