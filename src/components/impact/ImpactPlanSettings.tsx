@@ -8,6 +8,7 @@ import { formatCurrency, getTotalAllocated, unallocatedFunds } from '@/utils/imp
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import LoadingOverlay from "@/components/loadingOverlay";
 import { deleteImpactPlanCharity, updateImpactPlanCharity } from "@/services/impactPlanCharity";
+import { DeletePlanModal } from "../modals/DeletePlanModal";
 
 const ImpactPlanSettings = () => {
   const { userProfile } = useAuth();
@@ -351,52 +352,11 @@ const ImpactPlanSettings = () => {
           </div>
       
           {/* Delete Modal */}
-          <Modal 
-            isOpen={deleteModalOpen} 
-            onClose={() => setDeleteModalOpen(false)}
-            backdrop="blur"
-            classNames={{
-              backdrop: "bg-black/50",
-              base: cardClasses,
-              header: "border-b border-gray-200 dark:border-gray-700",
-              footer: "border-t border-gray-200 dark:border-gray-700",
-              closeButton: "hover:bg-gray-100 dark:hover:bg-gray-700",
-              body: "text-gray-600 dark:text-gray-400",
-            }}
-          >
-            <ModalContent>
-              {(onClose) => (
-                <>
-                  <ModalHeader className="text-gray-900 dark:text-gray-100">
-                    Are you sure?
-                  </ModalHeader>
-                  <ModalBody>
-                    <p>
-                      This action cannot be undone. This will permanently delete your impact plan.
-                    </p>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button 
-                      className={secondaryButtonClasses}
-                      onPress={onClose}
-                      variant="light"
-                    >
-                      Cancel
-                    </Button>
-                    <Button 
-                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-                      onPress={() => {
-                        handleDeletePlan();
-                        onClose();
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </ModalFooter>
-                </>
-              )}
-            </ModalContent>
-          </Modal>
+          <DeletePlanModal
+          isOpen={deleteModalOpen}
+          onClose={(()=>setDeleteModalOpen(false))}
+          onDelete={handleDeletePlan}
+          />
       
           {/* Loading Overlay */}
           {isLoading && (
