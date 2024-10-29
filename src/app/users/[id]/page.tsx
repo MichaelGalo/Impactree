@@ -61,22 +61,6 @@ const Profile = () => {
         }
     };
 
-    const inputClasses = `w-full border rounded p-2
-        bg-white dark:bg-gray-600
-        text-gray-900 dark:text-gray-100
-        border-gray-300 dark:border-gray-600
-        focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-        focus:border-blue-500 dark:focus:border-blue-400
-        placeholder-gray-400 dark:placeholder-gray-500`;
-
-    const labelClasses = `block mb-1 text-gray-900 dark:text-gray-100`;
-
-    const buttonClasses = `bg-transparent hover:bg-blue-100 dark:hover:bg-blue-900/40 
-        text-blue-600 dark:text-blue-400 
-        px-4 py-2 rounded
-        border border-blue-600 dark:border-blue-400
-        disabled:opacity-50 disabled:cursor-not-allowed`;
-
     if (!userProfile) {
         return <div>Loading...</div>;
     }
@@ -85,7 +69,7 @@ const Profile = () => {
         <div className="container mx-auto mt-10 max-w-md">
             <form onSubmit={submit} className="space-y-4">
                 <div>
-                    <label htmlFor="username" className={labelClasses}>
+                    <label htmlFor="username" className="labelClasses">
                         Username
                     </label>
                     <input 
@@ -94,12 +78,12 @@ const Profile = () => {
                         name="username" 
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className={inputClasses}
+                        className="inputClasses"
                         disabled={isSubmitting}
                     />
                 </div>
                 <div>
-                    <label htmlFor="firstName" className={labelClasses}>
+                    <label htmlFor="firstName" className="labelClasses">
                         First Name
                     </label>
                     <input 
@@ -108,12 +92,12 @@ const Profile = () => {
                         name="firstName" 
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        className={inputClasses}
+                        className="inputClasses"
                         disabled={isSubmitting}
                     />
                 </div>
                 <div>
-                    <label htmlFor="lastName" className={labelClasses}>
+                    <label htmlFor="lastName" className="labelClasses">
                         Last Name
                     </label>
                     <input 
@@ -122,12 +106,12 @@ const Profile = () => {
                         name="lastName" 
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        className={inputClasses}
+                        className="inputClasses"
                         disabled={isSubmitting}
                     />
                 </div>
                 <div>
-                    <label htmlFor="email" className={labelClasses}>
+                    <label htmlFor="email" className="labelClasses">
                         Email
                     </label>
                     <input 
@@ -136,14 +120,14 @@ const Profile = () => {
                         name="email" 
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className={inputClasses}
+                        className="inputClasses"
                         disabled={isSubmitting}
                     />
                 </div>
                 <div className="text-center">
                     <button 
                         type="submit" 
-                        className={buttonClasses}
+                        className="primaryButtonClasses disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? 'Saving...' : 'Save'}

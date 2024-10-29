@@ -88,27 +88,14 @@ const CharityForm = () => {
     }
   };
 
-  const inputClasses = `w-full border rounded p-2
-    bg-white dark:bg-gray-700
-    text-gray-900 dark:text-gray-100
-    border-gray-300 dark:border-gray-600
-    focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-    focus:border-blue-500 dark:focus:border-blue-400
-    placeholder-gray-400 dark:placeholder-gray-500`;
-
-  const labelClasses = `block mb-1 text-gray-900 dark:text-gray-100`;
-
-  const primaryButtonClasses = `w-full bg-transparent hover:bg-blue-100 dark:hover:bg-blue-900/40 
-    text-blue-600 dark:text-blue-400 
-    px-4 py-2 rounded
-    border border-blue-600 dark:border-blue-400
+  const primaryButtonClasses = `w-full primaryButtonClasses
     ${loading ? 'opacity-50 cursor-not-allowed' : ''}`;
 
   return (
     <div className="container mx-auto mt-10 max-w-2xl">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className={labelClasses}>
+          <label htmlFor="name" className="labelClasses">
             Name
           </label>
           <input 
@@ -117,13 +104,13 @@ const CharityForm = () => {
             name="name"
             value={formData.name}
             onChange={handleInputChange}
-            className={inputClasses}
+            className="inputClasses"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="description" className={labelClasses}>
+          <label htmlFor="description" className="labelClasses">
             Description
           </label>
           <textarea
@@ -131,14 +118,14 @@ const CharityForm = () => {
             name="description"
             value={formData.description}
             onChange={handleInputChange}
-            className={inputClasses}
+            className="inputClasses"
             rows={4}
             required
           />
         </div>
 
         <div>
-          <label htmlFor="category" className={labelClasses}>
+          <label htmlFor="category" className="labelClasses">
             Category
           </label>
           <select
@@ -146,7 +133,7 @@ const CharityForm = () => {
             name="category"
             value={formData.category || ''}
             onChange={handleInputChange}
-            className={inputClasses}
+            className="inputClasses"
             required
           >
             <option value="">Select a category</option>
@@ -159,7 +146,7 @@ const CharityForm = () => {
         </div>
 
         <div>
-          <label htmlFor="impact_metric" className={labelClasses}>
+          <label htmlFor="impact_metric" className="labelClasses">
             Impact Metric
           </label>
           <input
@@ -168,13 +155,13 @@ const CharityForm = () => {
             name="impact_metric"
             value={formData.impact_metric}
             onChange={handleInputChange}
-            className={inputClasses}
+            className="inputClasses"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="impact_ratio" className={labelClasses}>
+          <label htmlFor="impact_ratio" className="labelClasses">
             Impact Ratio
           </label>
           <input
@@ -184,13 +171,13 @@ const CharityForm = () => {
             value={formData.impact_ratio}
             onChange={handleInputChange}
             step="0.01"
-            className={inputClasses}
+            className="inputClasses"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="website_url" className={labelClasses}>
+          <label htmlFor="website_url" className="labelClasses">
             Website URL
           </label>
           <input
@@ -199,13 +186,13 @@ const CharityForm = () => {
             name="website_url"
             value={formData.website_url}
             onChange={handleInputChange}
-            className={inputClasses}
+            className="inputClasses"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="image" className={labelClasses}>
+          <label htmlFor="image" className="labelClasses">
             Image
           </label>
           <input
@@ -213,7 +200,7 @@ const CharityForm = () => {
             id="image"
             accept="image/*"
             onChange={handleImageChange}
-            className={inputClasses}
+            className="inputClasses"
           />
         </div>
 

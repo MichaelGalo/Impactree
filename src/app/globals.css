@@ -1,3 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .inputClasses {
+    @apply w-full border rounded p-2
+      bg-white dark:bg-gray-700
+      text-gray-900 dark:text-gray-100
+      border-gray-300 dark:border-gray-600
+      focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
+      focus:border-blue-500 dark:focus:border-blue-400
+      placeholder-gray-400 dark:placeholder-gray-500;
+  }
+
+  .labelClasses {
+    @apply block mb-1 text-gray-900 dark:text-gray-100;
+  }
+
+  .primaryButtonClasses {
+    @apply bg-transparent hover:bg-blue-100 dark:hover:bg-blue-900/40 
+      text-blue-600 dark:text-blue-400 
+      px-4 py-2 rounded
+      border border-blue-600 dark:border-blue-400;
+  }
+
+  .secondaryButtonClasses {
+    @apply bg-transparent hover:bg-red-300 dark:hover:bg-gray-700
+      text-red-600 dark:text-gray-400
+      px-4 py-2 rounded
+      border border-red-600 dark:border-gray-400;
+  }
+
+  .tertiaryButtonClasses {
+    @apply bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700
+    text-gray-600 dark:text-gray-400
+    px-4 py-2 rounded
+    border border-gray-600 dark:border-gray-400
+  }
+
+  .cardClasses {
+    @apply bg-gray-100 dark:bg-gray-800 
+      border border-gray-200 dark:border-gray-700 
+      rounded-lg shadow-sm;
+  }
+}
