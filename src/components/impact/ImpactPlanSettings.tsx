@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import { ImpactPlanCharity } from "@/types/impactPlan.types";
-import { formatCurrency, getTotalAllocated, unallocatedFunds } from '@/utils/impactMetrics';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { formatCurrency } from '@/utils/impactMetrics';
 import LoadingOverlay from "@/components/loadingOverlay";
 import { DeletePlanModal } from "../modals/DeletePlanModal";
 import { useImpactPlanManager } from "@/hooks/useImpactPlanManager";
+import AllocationModal from "../modals/AllocationModal";
+
 
 const ImpactPlanSettings = () => {
-  // Hook state and handlers
+  // Custom hook for plan management
   const {
     impactPlan,
     annualIncome,
@@ -24,32 +25,19 @@ const ImpactPlanSettings = () => {
     handleDeleteCharity
   } = useImpactPlanManager();
 
-  // Local modal state
+  // Local state for modals
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [allocationModalOpen, setAllocationModalOpen] = useState(false);
   const [selectedCharity, setSelectedCharity] = useState<ImpactPlanCharity | null>(null);
-  const [newAllocationAmount, setNewAllocationAmount] = useState<string>("");
 
   // Modal handlers
   const openAllocationModal = (charity: ImpactPlanCharity) => {
     setSelectedCharity(charity);
-    setNewAllocationAmount(String(charity.allocation_amount));
     setAllocationModalOpen(true);
   };
 
-  const handleAllocationUpdate = async () => {
-    if (!selectedCharity || !newAllocationAmount) return;
-    await handleUpdateAllocation(selectedCharity.id, Number(newAllocationAmount));
+  const closeAllocationModal = () => {
     setAllocationModalOpen(false);
-    setNewAllocationAmount("");
-    setSelectedCharity(null);
-  };
-
-  const handleCharityDelete = async () => {
-    if (!selectedCharity) return;
-    await handleDeleteCharity(selectedCharity.id);
-    setAllocationModalOpen(false);
-    setNewAllocationAmount("");
     setSelectedCharity(null);
   };
 
@@ -199,91 +187,14 @@ const ImpactPlanSettings = () => {
         onDelete={handleDeletePlan}
       />
 
-      <Modal 
-        isOpen={allocationModalOpen} 
-        onClose={() => {
-          setAllocationModalOpen(false);
-          setSelectedCharity(null);
-          setNewAllocationAmount("");
-        }}
-        backdrop="blur"
-        classNames={{
-          backdrop: "bg-black/50",
-          base: cardClasses,
-          header: "border-b border-gray-200 dark:border-gray-700",
-          footer: "border-t border-gray-200 dark:border-gray-700",
-          closeButton: "hover:bg-gray-100 dark:hover:bg-gray-700",
-          body: "text-gray-600 dark:text-gray-400",
-        }}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="text-gray-900 dark:text-gray-100">
-                Update Donation for {selectedCharity?.charity.name}
-              </ModalHeader>
-              <ModalBody>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                      Total Annual Allocation Available
-                    </p>
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">
-                      {impactPlan ? unallocatedFunds(impactPlan) : '$0.00'}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      of {impactPlan ? formatCurrency(Number(impactPlan.total_annual_allocation)) : '$0.00'} total
-                    </p>
-                  </div>
-                  <div>
-                    <label htmlFor="allocation-amount" className={labelClasses}>
-                      Allocation Amount
-                    </label>
-                    <input
-                      type="number"
-                      id="allocation-amount"
-                      value={newAllocationAmount}
-                      onChange={(e) => setNewAllocationAmount(e.target.value)}
-                      className={inputClasses}
-                      min={0}
-                      max={impactPlan ? (
-                        Number(impactPlan.total_annual_allocation) - 
-                        getTotalAllocated(impactPlan) + 
-                        (selectedCharity ? Number(selectedCharity.allocation_amount) : 0)
-                      ) : 0}
-                      step={0.01}
-                      placeholder="Enter allocation amount"
-                    />
-                  </div>
-                </div>
-              </ModalBody>
-              <ModalFooter className="flex justify-between">
-                <Button 
-                  className={secondaryButtonClasses}
-                  onPress={handleCharityDelete}
-                >
-                  Remove Charity
-                </Button>
-                <div className="flex gap-2">
-                  <Button 
-                    className={secondaryButtonClasses}
-                    onPress={onClose}
-                    variant="light"
-                  >
-                    Cancel
-                  </Button>
-                  <Button 
-                    className={primaryButtonClasses}
-                    onPress={handleAllocationUpdate}
-                  >
-                    Save
-                  </Button>
-                </div>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <AllocationModal
+        isOpen={allocationModalOpen}
+        onClose={closeAllocationModal}
+        selectedCharity={selectedCharity}
+        impactPlan={impactPlan}
+        onUpdateAllocation={handleUpdateAllocation}
+        onDeleteCharity={handleDeleteCharity}
+      />
 
       {/* Loading Overlay */}
       {isLoading && <LoadingOverlay />}
