@@ -46,7 +46,7 @@ const ImpactPlanSettings = () => {
       <div className="flex gap-6">
         {/* Left Column - Settings */}
         <div className="w-1/3 space-y-4">
-          <div className="cardClasses">
+          <div className="cardClasses ">
             <div className="p-4">
               {/* Total Annual Allocation */}
               <div className="mb-4 p-4 bg-white dark:bg-gray-700 rounded-lg">

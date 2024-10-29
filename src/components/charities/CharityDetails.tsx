@@ -104,7 +104,7 @@ const CharityDetails = () => {
 
   return (
     <div className="details-container pt-0 pb-4">
-        <div className="max-w-4xl mx-auto p-8 bg-gray-100 dark:bg-gray-900 rounded-3xl my-24">
+        <div className="max-w-4xl mx-auto p-8 bg-gray-200 dark:bg-gray-900 rounded-3xl my-24">
         {error && (
           <div className="mb-6 p-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 rounded-lg">
             {error}
