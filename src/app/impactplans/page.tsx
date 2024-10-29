@@ -168,10 +168,10 @@ const ImpactDashboard = () => {
                     {impactPlan?.current_milestone?.name || 'Future Green Thumb'}
                 </h3>
                 
-                {impactPlan?.current_milestone?.image_url ? (
-                    <div className="w-16 h-16 mb-4 relative">
+                {impactPlan?.current_milestone?.image_filename ? (
+                    <div className="w-40 h-40 mb-4 relative">
                     <img 
-                        src={impactPlan.current_milestone.image_url} 
+                        src={impactPlan.current_milestone.image_filename} 
                         alt={impactPlan.current_milestone.name}
                         className="w-full h-full object-cover rounded-full"
                     />
