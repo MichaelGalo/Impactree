@@ -3,5 +3,5 @@ export interface Milestone {
     name: string;
     description: string;
     required_percentage: string;
-    image_url: string;
+    image_filename: string;
   }
