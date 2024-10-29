@@ -41,37 +41,12 @@ const ImpactPlanSettings = () => {
     setSelectedCharity(null);
   };
 
-  // Style classes
-  const inputClasses = `w-full border rounded p-2
-    bg-white dark:bg-gray-700
-    text-gray-900 dark:text-gray-100
-    border-gray-300 dark:border-gray-600
-    focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-    focus:border-blue-500 dark:focus:border-blue-400
-    placeholder-gray-400 dark:placeholder-gray-500`;
-
-  const labelClasses = `block mb-1 text-gray-900 dark:text-gray-100`;
-
-  const primaryButtonClasses = `bg-transparent hover:bg-blue-100 dark:hover:bg-blue-900/40 
-    text-blue-600 dark:text-blue-400 
-    px-4 py-2 rounded
-    border border-blue-600 dark:border-blue-400`;
-
-  const secondaryButtonClasses = `bg-transparent hover:bg-red-300 dark:hover:bg-gray-700
-    text-red-600 dark:text-gray-400
-    px-4 py-2 rounded
-    border border-red-600 dark:border-gray-400`;
-
-  const cardClasses = `bg-gray-100 dark:bg-gray-800 
-    border border-gray-200 dark:border-gray-700 
-    rounded-lg shadow-sm`;
-
   return (
     <div className="container mx-auto p-6">
       <div className="flex gap-6">
         {/* Left Column - Settings */}
         <div className="w-1/3 space-y-4">
-          <div className={cardClasses}>
+          <div className="cardClasses">
             <div className="p-4">
               {/* Total Annual Allocation */}
               <div className="mb-4 p-4 bg-white dark:bg-gray-700 rounded-lg">
@@ -85,7 +60,7 @@ const ImpactPlanSettings = () => {
 
               {/* Annual Income Input */}
               <div className="mb-4">
-                <label htmlFor="annual-income" className={labelClasses}>
+                <label htmlFor="annual-income" className="labelClasses">
                   Annual Income
                 </label>
                 <input
@@ -93,7 +68,7 @@ const ImpactPlanSettings = () => {
                   id="annual-income"
                   value={annualIncome}
                   onChange={(e) => handleAnnualIncomeChange(e.target.value)}
-                  className={inputClasses}
+                  className="inputClasses"
                   min={0}
                   placeholder="Enter your annual income"
                 />
@@ -101,7 +76,7 @@ const ImpactPlanSettings = () => {
 
               {/* Philanthropy Percentage Input */}
               <div className="mb-4">
-                <label htmlFor="philanthropy-percentage" className={labelClasses}>
+                <label htmlFor="philanthropy-percentage" className="labelClasses">
                   Philanthropy Percentage
                 </label>
                 <input
@@ -109,7 +84,7 @@ const ImpactPlanSettings = () => {
                   id="philanthropy-percentage"
                   value={philanthropyPercentage}
                   onChange={(e) => handlePercentageChange(e.target.value)}
-                  className={inputClasses}
+                  className="inputClasses"
                   min={0}
                   max={100}
                   step={0.1}
@@ -121,7 +96,7 @@ const ImpactPlanSettings = () => {
               <div className="flex flex-col gap-2">
                 <button 
                   onClick={handleSavePlan} 
-                  className={primaryButtonClasses}
+                  className="primaryButtonClasses"
                   disabled={isLoading}
                 >
                   {isNewPlan ? 'Create Plan' : 'Save Plan'}
@@ -129,7 +104,7 @@ const ImpactPlanSettings = () => {
                 {!isNewPlan && (
                   <button 
                     onClick={() => setDeleteModalOpen(true)} 
-                    className={secondaryButtonClasses}
+                    className="secondaryButtonClasses"
                     disabled={isLoading}
                   >
                     Delete Plan
@@ -142,7 +117,7 @@ const ImpactPlanSettings = () => {
 
         {/* Right Column - Charities */}
         <div className="w-2/3">
-          <div className={cardClasses}>
+          <div className="cardClasses">
             <div className="p-4">
               <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
                 Selected Charities & Causes
@@ -163,7 +138,7 @@ const ImpactPlanSettings = () => {
                     </div>
                     <button
                       onClick={() => openAllocationModal(charity)}
-                      className={primaryButtonClasses}
+                      className="primaryButtonClasses"
                     >
                       Edit Donation
                     </button>
