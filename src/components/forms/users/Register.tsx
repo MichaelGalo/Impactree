@@ -3,6 +3,7 @@
 import { useAuth } from "@/context/AuthContext"
 import { register } from "@/services/auth"
 import { RegisterData } from "@/types/auth.types"
+import { IconEye, IconEyeOff } from "@tabler/icons-react"
 import { useRouter } from 'next/navigation'
 import { useState } from "react"
 
@@ -144,7 +145,7 @@ const RegistrationForm = () => {
                             onClick={togglePasswordVisibility}
                             className={passwordToggleClasses}
                         >
-                            {showPassword ? "🫣" : "👀"}
+                            {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
                         </button>
                     </div>
                 </div>

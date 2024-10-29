@@ -1,5 +1,3 @@
-'use client';
-
 import CharityForm from "@/components/forms/charities/CharityCreate";
 
 

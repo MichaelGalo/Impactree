@@ -3,6 +3,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { login } from '@/services/auth';
 import { LoginCredentials } from '@/types/auth.types';
+import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
 
@@ -100,7 +101,7 @@ const LoginForm = () => {
                                 text-gray-600 dark:text-gray-400 
                                 hover:text-gray-800 dark:hover:text-gray-200"
                         >
-                            {showPassword ? "🫣" : "👀"}
+                            {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
                         </button>
                     </div>
                 </div>

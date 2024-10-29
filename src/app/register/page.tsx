@@ -1,8 +1,6 @@
 import RegistrationForm from "@/components/forms/users/Register"
 
 
-
-
 const RegisterPage = () => {
     return (
         <div className="container mx-auto mt-10 max-w-md">

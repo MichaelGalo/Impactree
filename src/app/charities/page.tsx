@@ -1,7 +1,4 @@
-'use client'
-
 import CharityList from "@/components/charities/CharityList";
-
 
 
 const Explore = () => (
