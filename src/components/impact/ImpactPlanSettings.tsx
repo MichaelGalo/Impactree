@@ -17,6 +17,7 @@ const ImpactPlanSettings = () => {
     philanthropyPercentage,
     isLoading,
     isNewPlan,
+    message,
     handleAnnualIncomeChange,
     handlePercentageChange,
     handleSavePlan,
@@ -43,6 +44,15 @@ const ImpactPlanSettings = () => {
 
   return (
     <div className="container mx-auto p-6">
+      {message && (
+        <div className={`mb-6 p-4 rounded-lg ${
+          message.type === 'success' 
+            ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-100' 
+            : 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100'
+        }`}>
+          {message.text}
+        </div>
+      )}
       <div className="flex gap-6">
         {/* Left Column - Settings */}
         <div className="w-1/3 space-y-4">

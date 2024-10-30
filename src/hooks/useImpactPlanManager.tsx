@@ -12,6 +12,12 @@ import {
 } from "@/services/impactPlanCharity";
 import { ImpactPlan, ImpactPlanCharity } from "@/types/impactPlan.types";
 
+type Message = {
+  type: 'success' | 'error';
+  text: string;
+} | null;
+
+
 export const useImpactPlanManager = () => {
   const { userProfile } = useAuth();
   const [impactPlan, setImpactPlan] = useState<ImpactPlan | null>(null);
@@ -19,6 +25,7 @@ export const useImpactPlanManager = () => {
   const [philanthropyPercentage, setPhilanthropyPercentage] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [isNewPlan, setIsNewPlan] = useState(false);
+  const [message, setMessage] = useState<Message>(null);
 
   useEffect(() => {
     fetchImpactPlan();
@@ -121,8 +128,11 @@ export const useImpactPlanManager = () => {
       const response = await createImpactPlan(requestBody);
       setImpactPlan(response.data);
       setIsNewPlan(false);
+      setMessage({ type: 'success', text: 'Impact Plan created successfully!' });
+      setTimeout(() => setMessage(null), 5000);
     } catch (error) {
       console.error('Error creating impact plan:', error);
+      setMessage({ type: 'error', text: 'Failed to create Impact Plan. Please try again.' });
     }
   };
 
@@ -139,8 +149,11 @@ export const useImpactPlanManager = () => {
 
       const response = await updateImpactPlan(impactPlan.id, requestBody);
       setImpactPlan(response.data);
+      setMessage({ type: 'success', text: 'Impact Plan created successfully!' });
+      setTimeout(() => setMessage(null), 5000);
     } catch (error) {
       console.error('Error updating impact plan:', error);
+      setMessage({ type: 'error', text: 'Failed to create Impact Plan. Please try again.' });
     }
   };
 
@@ -153,9 +166,12 @@ export const useImpactPlanManager = () => {
         setImpactPlan(null);
         setAnnualIncome("");
         setPhilanthropyPercentage("");
+        setMessage({ type: 'success', text: 'Impact Plan deleted successfully!' });
+        setTimeout(() => setMessage(null), 5000);
       }
     } catch (error) {
       console.error('Error deleting impact plan:', error);
+      setMessage({ type: 'error', text: 'Failed to delete Impact Plan. Please try again.' });
     }
   };
 
@@ -183,6 +199,7 @@ export const useImpactPlanManager = () => {
     philanthropyPercentage,
     isLoading,
     isNewPlan,
+    message,
     handleAnnualIncomeChange,
     handlePercentageChange,
     handleSavePlan,
