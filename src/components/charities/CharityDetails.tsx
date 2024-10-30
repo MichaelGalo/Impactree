@@ -19,6 +19,7 @@ const CharityDetails = () => {
   const [charity, setCharity] = useState<Charity | undefined>(undefined);
   const [impactPlan, setImpactPlan] = useState<ImpactPlan | null>(null);
   const [error, setError] = useState<string | null>(null); 
+  const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter()
  
   useEffect(() => {
@@ -71,6 +72,10 @@ const CharityDetails = () => {
   }
 
   const handleAddToImpact = async () => {
+      setError(null);
+    setSuccess(null);
+
+
     if (!impactPlan) {
       setError("Please create an Impact Plan first to add charities.");
       return;
@@ -97,7 +102,7 @@ const CharityDetails = () => {
         charity_id: charity.id,
         allocation_amount: 0 // Default to 0, to be updated later
       });
-      window.alert('Charity Added to Your Impact Plan!');
+      setSuccess('Charity successfully added to your Impact Plan!');
     } catch (error: any) {
       setError("Failed to add charity to impact plan");
     }
@@ -109,6 +114,11 @@ const CharityDetails = () => {
         {error && (
           <div className="mb-6 p-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 rounded-lg">
             {error}
+          </div>
+        )}
+        {success && (
+          <div className="mb-6 p-4 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-100 rounded-lg">
+            {success}
           </div>
         )}
         <div className="space-y-6">
