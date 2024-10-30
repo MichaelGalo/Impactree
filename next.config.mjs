@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  output: 'export',  
   images: {
+    unoptimized: true,  
     remotePatterns: [
       {
-        protocol: 'http',
+        protocol: 'https',
         hostname: 'impactree-api-k6c8s.ondigitalocean.app',
         port: '',
         pathname: '/media/**',
@@ -14,6 +15,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
- };
- 
- export default nextConfig;
+};
+
+export default nextConfig;
