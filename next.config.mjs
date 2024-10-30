@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'impactree-api-k6c8s.ondigitalocean.app',
+        hostname: 'impactree-client-wzoz9.ondigitalocean.app',
         port: '',
         pathname: '/media/**',
       },
