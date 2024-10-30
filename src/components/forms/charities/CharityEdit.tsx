@@ -6,6 +6,7 @@ import { CharityCategory } from "@/types/charityCategory";
 import { getCharityCategories } from '@/services/charityCategory';
 import { getCharityById, updateCharity } from '@/services/charity';
 import { CharityFormData } from './CharityCreate';
+import { baseUrl } from '@/services/fetcher';
 
 interface Props {
   charityId: number;
@@ -210,7 +211,7 @@ const CharityEditForm = ({ charityId }: Props) => {
           {formData.image && (
             <div className="mt-2">
               <img 
-                src={formData.image} 
+                src={`${baseUrl}${formData.image}`} 
                 alt="Current charity image" 
                 className="max-w-xs h-auto"
               />
