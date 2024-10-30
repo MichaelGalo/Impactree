@@ -57,7 +57,7 @@ export const Nav: React.FC = () => {
   return (
     <Navbar 
       onMenuOpenChange={setIsMenuOpen}
-      className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"
+      className="bg-slate-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"
     >
       <NavbarContent>
         <NavbarMenuToggle

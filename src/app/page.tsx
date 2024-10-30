@@ -1,7 +1,8 @@
 "use client"
 
-import AboutHow from "@/components/text/AboutHow";
-import AboutWhy from "@/components/text/AboutWhy";
+import AboutFooter from "@/components/about/AboutFooter";
+import AboutHow from "@/components/about/AboutHow";
+import AboutWhy from "@/components/about/AboutWhy";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
@@ -34,7 +35,7 @@ const Home = () => {
               <hr className="border-black dark:border-white my-4" />
               <div className="flex justify-center mt-8">
               <button 
-              className="px-6 py-3 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-300"
+              className="primaryButtonClasses"
               onClick={handleExploreClick}
               >
               Explore Charities & Causes
@@ -56,9 +57,7 @@ const Home = () => {
       <AboutHow/>
 
       {/* Footer Content */}
-      <footer className="py-4 flex justify-center mt-auto">
-        <p>© 2024 Impactree. All rights reserved.</p>
-      </footer>
+      <AboutFooter/>
     </div>
   );
 }

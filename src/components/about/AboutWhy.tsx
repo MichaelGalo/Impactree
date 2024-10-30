@@ -4,7 +4,7 @@ export const AboutWhy = () => {
         <div className="max-w-5xl container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-6 text-center">Why Impactree?</h2>
           <p className="text-lg mb-8">
-            After spending around a decade working with non-profit organizations and B-Corp brands, I've noticed several patterns that Impactree aims to address:
+            After spending around a decade working with non-profit organizations and B-Corp brands, we've noticed several patterns that Impactree aims to address:
           </p>
           <ul className="list-disc pl-6 space-y-6 mb-8">
             <li className="text-lg">
