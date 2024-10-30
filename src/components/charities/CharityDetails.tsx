@@ -11,6 +11,7 @@ import { getAllImpactPlans } from '@/services/impactPlan';
 import { ImpactPlan } from '@/types/impactPlan.types';
 import { createImpactPlanCharity } from '@/services/impactPlanCharity';
 import { useRouter } from 'next/navigation';
+import { baseUrl } from '@/services/fetcher';
 
 const CharityDetails = () => {
   const { userProfile } = useAuth();
@@ -175,7 +176,7 @@ const CharityDetails = () => {
                 {charity?.image ? (
                 <div className="relative w-full h-full">
                     <Image
-                    src={charity?.image}
+                    src={`${baseUrl}${charity.image}`}
                     alt={`${charity.name} image`}
                     fill
                     className="object-cover"
@@ -183,7 +184,7 @@ const CharityDetails = () => {
                 </div>
                 ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-50 dark:bg-gray-700">
-                    <span className="text-gray-400 dark:text-gray-500">Image Card</span>
+                    <span className="text-gray-400 dark:text-gray-500">Upload Image</span>
                 </div>
                 )}
             </div>
