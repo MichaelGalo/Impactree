@@ -1,11 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   images: {
     remotePatterns: [
       {
         protocol: 'http',
-        hostname: 'localhost',
-        port: '8000',
+        hostname: 'impactree-api-k6c8s.ondigitalocean.app',
+        port: '',
         pathname: '/media/**',
       },
     ],
