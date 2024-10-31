@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { CharityCategory } from "@/types/charityCategory";
 import { getCharityCategories } from '@/services/charityCategory';
 import { createCharity } from '@/services/charity';
+import { Tooltip } from '@nextui-org/react';
+import { IconInfoCircle } from '@tabler/icons-react';
 
 export interface CharityFormData {
   name: string;
@@ -148,6 +150,9 @@ const CharityForm = () => {
         <div>
           <label htmlFor="impact_metric" className="labelClasses">
             Impact Metric
+            <Tooltip content="Describe what donation wills go towards (e.g., 'meals provided', 'trees planted', etc). Keep it concise and measurable.">
+            <span className="text-sm text-gray-500 cursor-help"><IconInfoCircle/></span>
+            </Tooltip>
           </label>
           <input
             type="text"
@@ -163,6 +168,9 @@ const CharityForm = () => {
         <div>
           <label htmlFor="impact_ratio" className="labelClasses">
             Impact Ratio
+            <Tooltip content="Enter how many people can be helped per $1. Example: If $20 provides water for 1 person, then 1÷20 = 0.05 people helped per $1. Enter 0.05 as your impact ratio.">
+            <span className="text-sm text-gray-500 cursor-help"><IconInfoCircle/></span>
+            </Tooltip>
           </label>
           <input
             type="number"
