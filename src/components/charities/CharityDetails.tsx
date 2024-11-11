@@ -18,7 +18,7 @@ const CharityDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [charity, setCharity] = useState<Charity | undefined>(undefined);
   const [impactPlan, setImpactPlan] = useState<ImpactPlan | null>(null);
-  const [error, setError] = useState<string | null>(null); 
+  const [error, setError] = useState<string | React.ReactNode | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter()
  
@@ -77,7 +77,16 @@ const CharityDetails = () => {
 
 
     if (!impactPlan) {
-      setError("Please create an Impact Plan first to add charities.");
+      setError(
+        <>
+          Please create an Impact Plan first to add charities. You can{' '}
+          <Link 
+          href="/impactplans/undefined"
+          className='text-blue-500 dark:text-blue-400'>
+            CLICK HERE
+            </Link> to go directly to yours!
+        </>
+      );
       return;
     }
 
