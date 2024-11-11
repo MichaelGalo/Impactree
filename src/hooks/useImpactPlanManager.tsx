@@ -128,7 +128,7 @@ export const useImpactPlanManager = () => {
       const response = await createImpactPlan(requestBody);
       setImpactPlan(response.data);
       setIsNewPlan(false);
-      setMessage({ type: 'success', text: 'Impact Plan created successfully!' });
+      setMessage({ type: 'success', text: 'Impact Plan updated successfully!' });
       setTimeout(() => setMessage(null), 5000);
     } catch (error) {
       console.error('Error creating impact plan:', error);
